@@ -53,7 +53,7 @@ export default function Accordion() {
 
             {/* Accordion Items */}
             <div className="w-full max-w-6xl space-y-4 px-6">
-                {accorData.map((item, index) => (
+                {accorData.map((item) => (
                     <div key={item.id}
                          className="group mb-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 overflow-hidden transition-all duration-300 hover:scale-[1.02]">
 
