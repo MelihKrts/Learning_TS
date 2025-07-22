@@ -39,7 +39,7 @@ export default function Accordion() {
             <div className="w-full text-center mb-8 flex flex-col justify-center items-center gap-4">
                 <div className="flex items-center gap-3">
                     <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg">
-                        <Image src="/logos/TS_Logo.svg" alt="TypeScript Logo" priority width={40} height={40}/>
+                        <Image src="/logos/ts_logo.svg" alt="TypeScript Logo" priority width={40} height={40}/>
                     </div>
                     {/*<h1 className="text-[var(--text-responsive)] font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">*/}
                     {/*    Learn TypeScript*/}

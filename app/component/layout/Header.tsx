@@ -19,7 +19,7 @@ export default function Header() {
                 <div className="flex items-center gap-2">
                     <Link href="/"
                           className="text-2xl flex items-center justify-center   text-white dark:text-gray-100">
-                        <Image src="/logos/TS_Logo.svg" alt="TypeScript Logo" width={35} height={35}/>
+                        <Image src="/logos/ts_logo.svg" alt="TypeScript Logo" width={35} height={35}/>
                         <h3 className="pt-2 px-2">Learn TS</h3>
                     </Link>
                 </div>
