@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { mdxComponents } from "@/mdx-components"; // Hook değil, direkt export
+import { mdxComponents } from "@/mdx-components";
 
 // Frontmatter tipini tanımla
 interface Frontmatter {
@@ -18,6 +18,11 @@ interface Frontmatter {
     lastUpdated?: string;
 }
 
+// Next.js 15 için params tipi
+interface PageProps {
+    params: Promise<{ slug: string }>;
+}
+
 // SSG için zorunlu - tüm slug'ları build time'da generate et
 export async function generateStaticParams() {
     const slugs = getAllDocSlugs();
@@ -27,12 +32,14 @@ export async function generateStaticParams() {
     }));
 }
 
-// SEO için metadata
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+// SEO için metadata - Next.js 15 uyumlu
+export async function generateMetadata({ params }: PageProps) {
+    const { slug } = await params;
+
     try {
-        const meta = getMdxPageMeta(params.slug);
+        const meta = getMdxPageMeta(slug);
         return {
-            title: meta.title || params.slug,
+            title: meta.title || slug,
             description: meta.description || "",
         };
     } catch {
@@ -42,8 +49,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
 }
 
-export default async function DocPage({ params }: { params: { slug: string } }) {
-    const filePath = path.join(process.cwd(), "content", `${params.slug}.mdx`);
+export default async function DocPage({ params }: PageProps) {
+    // Next.js 15'te params await edilmeli
+    const { slug } = await params;
+
+    const filePath = path.join(process.cwd(), "content", `${slug}.mdx`);
 
     // Dosya kontrolü
     if (!fs.existsSync(filePath)) {
@@ -56,11 +66,11 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
         const { content, frontmatter } = await compileMDX<Frontmatter>({
             source: mdxSource,
             options: { parseFrontmatter: true },
-            components: mdxComponents // Hook değil, direkt import
+            components: mdxComponents
         });
 
         // Meta bilgilerini al (frontmatter + fallback)
-        const meta = getMdxPageMeta(params.slug);
+        const meta = getMdxPageMeta(slug);
 
         return (
             <div className="w-full">
@@ -87,7 +97,8 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
                         {(frontmatter?.prev || meta.prev) && (
                             <Link
                                 href={`/docs/${frontmatter?.prev || meta.prev}`}
-                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium">
+                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium"
+                            >
                                 <span className="mr-2">←</span>
                                 Önceki Konu
                             </Link>
@@ -96,7 +107,8 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
                         {(frontmatter?.next || meta.next) && (
                             <Link
                                 href={`/docs/${frontmatter?.next || meta.next}`}
-                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium sm:ml-auto">
+                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium sm:ml-auto"
+                            >
                                 Sonraki Konu
                                 <span className="ml-2">→</span>
                             </Link>
