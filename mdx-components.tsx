@@ -215,6 +215,8 @@ import type { MDXComponents } from 'mdx/types'
 import AlertBox from "@/app/component/ui/AlertBox";
 import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
 export const mdxComponents: MDXComponents = {
+    AlertBox,
+    ImageWithCaption,
     h1: (props) => (
         <h1 className="text-3xl font-bold mb-6 mt-8 text-gray-900 first:mt-0" {...props} />
     ),
