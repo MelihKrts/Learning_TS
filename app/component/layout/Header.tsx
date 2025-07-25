@@ -52,7 +52,7 @@ export default function Header() {
                     <ul className="flex flex-col space-y-4 p-4 text-lg">
                         <li>
                             <Link
-                                href="/mdx-page"
+                                href="/docs/welcome"
                                 onClick={() => setIsOpen(false)}
                                 className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors"
                             >
