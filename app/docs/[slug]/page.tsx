@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { useMDXComponents } from "@/mdx-components";
+import { mdxComponents } from "@/mdx-components"; // Hook değil, direkt export
 
 // Frontmatter tipini tanımla
 interface Frontmatter {
@@ -53,13 +53,10 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
     try {
         const mdxSource = fs.readFileSync(filePath, "utf8");
 
-        // MDX komponentlerini hook kullanmadan al
-        const components = useMDXComponents({});
-
         const { content, frontmatter } = await compileMDX<Frontmatter>({
             source: mdxSource,
             options: { parseFrontmatter: true },
-            components: components
+            components: mdxComponents // Hook değil, direkt import
         });
 
         // Meta bilgilerini al (frontmatter + fallback)
@@ -80,9 +77,7 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
                 </header>
 
                 {/* MDX İçerik */}
-                <article className="prose prose-sm sm:prose lg:prose-lg  max-w-none
-                    prose-headings:text-gray-900 prose-p:text-gray-700
-                    prose-p:leading-relaxed prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-code:text-pink-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+                <article className="max-w-none">
                     {content}
                 </article>
 
@@ -92,8 +87,7 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
                         {(frontmatter?.prev || meta.prev) && (
                             <Link
                                 href={`/docs/${frontmatter?.prev || meta.prev}`}
-                                className="
-                                    inline-flex items-center  text-blue-600 hover:text-blue-800  hover:underline transition-colors text-sm sm:text-base font-medium">
+                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium">
                                 <span className="mr-2">←</span>
                                 Önceki Konu
                             </Link>
@@ -102,7 +96,7 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
                         {(frontmatter?.next || meta.next) && (
                             <Link
                                 href={`/docs/${frontmatter?.next || meta.next}`}
-                                className="inline-flex items-center text-blue-600 hover:text-blue-800  hover:underline transition-colors text-sm sm:text-base font-medium sm:ml-auto ">
+                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium sm:ml-auto">
                                 Sonraki Konu
                                 <span className="ml-2">→</span>
                             </Link>
