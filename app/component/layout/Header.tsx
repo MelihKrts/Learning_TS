@@ -28,7 +28,7 @@ export default function Header() {
                 <ul className="hidden @4xl:flex flex-row space-x-6 text-lg">
                     <li>
                         <Link
-                            href="/mdx-page"
+                            href="/docs/welcome"
                             className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors"
                         >
                             MDX Page

@@ -1,8 +1,17 @@
-[//]: # (![Welcome Cover Image]&#40;&#41;)
+---
+title: "Başlamadan Önce"
+next: "deneme"
+---
 
-<figure>
-    <img src="/assets/welcome/welcome-cover.webp" alt="deneme" />
-</figure>
+import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
+import AlertBox from "@/app/component/ui/AlertBox";
+
+<ImageWithCaption
+    srcWebp="/assets/welcome/welcome-cover.webp"
+    srcFallBack="/assets/welcome/welcome-cover.webp"
+    alt="TypeScript "
+    caption="TypeScript ve JavaScript karşılaşması"
+/>
 
 # Başlamadan Önce
 
@@ -47,6 +56,20 @@ TypeScript aslında bir JavaScript'tir. JavaScript'in üst kümesidir. JavaScrip
 > Üzerinde işlem yapılan değer türüne göre hata olup olmadığını belirlemeye **statik tip kontrolü** denir.
 >
 > **Statik tür denetleyicisi** programı yürütmeden önce hataya karşı kontrol ederken değer türüne göre yapar.
+
+# Tünelin Ucunda Işık
+Kısaca TypeScript ve JavaScript hakkında bilgi verildi. TypeScript, JavaScript'in üst kümesi olduğundan ilk JavaScript öğrenmek TypeScript için aşina olacaktır. Temelde kodlar aynı olsa bile çalışma mantığı ve yazım farklılıkları mevcuttur. JavaScript bilmeniz TypeScript'e adapte olma konusunda faydası olacaktır.
+
+TypeScript JavaScript ile benzer olsa da farklılık vardır. JavaScript öğrenemden TypeScript öğrenmek kafa karıştırıcı olabilir. Yapısı gereği TypeScript statik tür denetçisidir. JavaScript'te bu özellik yoktur. Aynı kod <kbd>js</kbd> uzantılı dosyada hata vermezken <kbd>ts</kbd> uzantılı dosyada hata (daha doğrusu tip kontrolü uyarısı) verecektir. Kodumda hata mı var motivasyon bozukluğuna sebep olabilir.
+
+TypeScript öğrenmek vakit kaybı olup olmadığı kişinin kendi araştırması ve yazdığı kodlara bağlı olup bunun hakkında fazla cevap yazmayı tercih etmiyorum.
+
+
+
+<AlertBox type="warning" title="Uyarı">
+    <p>TypeScript ile alakalı olduğundan JavaScript hakkında detaylı bilgi verilmeyecektir.</p>
+</AlertBox>
+
 
 # Kaynakça
 - [https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_web_server](https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_web_server )
