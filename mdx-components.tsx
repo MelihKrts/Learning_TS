@@ -254,11 +254,11 @@ export const mdxComponents: MDXComponents = {
         <li className="leading-relaxed" {...props} />
     ),
     a: (props) => (
-        <a className="text-blue-600 hover:text-blue-800 underline transition-colors" {...props} />
+        <a className="text-blue-600 no-underline hover:text-blue-800 break-all leading-relaxed transition-colors" {...props} />
     ),
     blockquote: (props) => (
         <blockquote
-            className="border-l-4 rounded-md border-blue-500 pl-4  text-gray-600 mb-4 bg-blue-50 py-2"
+            className="border-l-4 rounded-md border-blue-500 px-4  text-gray-600 mb-4 bg-blue-50 py-2"
             {...props}
         />
     ),
