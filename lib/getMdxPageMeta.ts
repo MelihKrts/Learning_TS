@@ -8,6 +8,8 @@ export interface DocMeta {
     description?: string;
     prev?: string;
     next?: string;
+    prevTitle?: string;
+    nextTitle?: string;
     order?: number;
     tags?: string[];
     lastUpdated?: string;

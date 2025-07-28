@@ -7,8 +7,8 @@ export default function DocsLayout({children,}: { children: React.ReactNode; }) 
     return (
         <>
             <DocsSidebar docTree={docTree}/>
-            <div className="transition-all duration-300  lg:ml-64 pt-16">
-                <div className="mx-auto px-4 lg:px-6 py-6 lg:py-8 ">
+            <div className="transition-all duration-300  lg:ml-64 pt-4">
+                <div className="mx-auto p-6 ">
                     {children}
                 </div>
             </div>

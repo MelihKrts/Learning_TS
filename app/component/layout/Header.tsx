@@ -28,7 +28,7 @@ export default function Header() {
                 <ul className="hidden @4xl:flex flex-row space-x-6 text-lg">
                     <li>
                         <Link
-                            href="/docs/welcome"
+                            href="/docs/started"
                             className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors"
                         >
                             MDX Page
@@ -52,10 +52,9 @@ export default function Header() {
                     <ul className="flex flex-col space-y-4 p-4 text-lg">
                         <li>
                             <Link
-                                href="/docs/welcome"
+                                href="/docs/started"
                                 onClick={() => setIsOpen(false)}
-                                className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors"
-                            >
+                                className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors">
                                 MDX Page
                             </Link>
                         </li>

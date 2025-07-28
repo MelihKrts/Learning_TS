@@ -1,0 +1,45 @@
+---
+title: "Veri Türleri"
+next: "datatypes"
+prev: "started"
+nextTitle: "Veri Türleri"
+prevTitle: "Başlamadan Önce"
+---
+
+import ImageWithCaption from "../app/component/ui/ImageWithCaption";
+
+<ImageWithCaption
+    alt="TypeScript Veri Türleri"
+    caption="TypeScript Veri Türleri"
+    srcWebp="/assets/datatypes/datatypes.webp"
+    srcFallBack="/assets/datatypes/datatypes.webp"/>
+
+Her Programlama dilinde olduğu gibi TypeScript'te de veri türleri bulunmaktadır. Veri türleri sayesinde değişkenin tutacağı değer türü tanımlanır. TypeScript tür güvenliği sağlar ve kod anlaşılırlığı artar.
+
+# String
+Metinsel veri türleri için kullanılır.
+
+```ts
+const text: string = "Hello World";
+```
+
+# Number
+Sayısal işlemlerde kullanılır.
+
+```ts
+const numOne: number = 15;
+```
+
+# Boolean
+Mantıksal değerdir. <kbd>true</kbd> <kbd>false</kbd> değerinden birini alır.
+
+```ts
+const isOpen: boolean = true;
+```
+
+# BigInt
+Çok büyük tam sayıları temsil eder.
+
+```ts
+const numTwo: bigint = 1234567890123456789012345678901234567890n;
+```

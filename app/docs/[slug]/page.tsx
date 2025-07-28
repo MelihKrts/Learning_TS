@@ -13,6 +13,8 @@ interface Frontmatter {
     description?: string;
     prev?: string;
     next?: string;
+    prevTitle?: string;
+    nextTitle?: string;
     order?: number;
     tags?: string[];
     lastUpdated?: string;
@@ -21,6 +23,16 @@ interface Frontmatter {
 // Next.js 15 için params tipi
 interface PageProps {
     params: Promise<{ slug: string }>;
+}
+
+// Navigation bilgilerini almak için helper fonksiyon
+function getNavigationTitle(slug: string): string {
+    try {
+        const meta = getMdxPageMeta(slug);
+        return meta.title || slug;
+    } catch {
+        return slug;
+    }
 }
 
 // SSG için zorunlu - tüm slug'ları build time'da generate et
@@ -50,7 +62,6 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function DocPage({ params }: PageProps) {
-    // Next.js 15'te params await edilmeli
     const { slug } = await params;
 
     const filePath = path.join(process.cwd(), "content", `${slug}.mdx`);
@@ -71,6 +82,23 @@ export default async function DocPage({ params }: PageProps) {
 
         // Meta bilgilerini al (frontmatter + fallback)
         const meta = getMdxPageMeta(slug);
+
+        // Navigation için konu başlıklarını al
+        const prevSlug = frontmatter?.prev || meta.prev;
+        const nextSlug = frontmatter?.next || meta.next;
+
+        // Başlık önceliği: frontmatter'daki özel başlık > otomatik başlık
+        const prevTitle = prevSlug ? (
+            frontmatter?.prevTitle ||
+            meta.prevTitle ||
+            getNavigationTitle(prevSlug)
+        ) : null;
+
+        const nextTitle = nextSlug ? (
+            frontmatter?.nextTitle ||
+            meta.nextTitle ||
+            getNavigationTitle(nextSlug)
+        ) : null;
 
         return (
             <div className="w-full">
@@ -94,23 +122,35 @@ export default async function DocPage({ params }: PageProps) {
                 {/* Navigation */}
                 <nav className="mt-8 lg:mt-12 pt-6 lg:pt-8 border-t border-gray-200">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                        {(frontmatter?.prev || meta.prev) && (
+                        {prevSlug && prevTitle && (
                             <Link
-                                href={`/docs/${frontmatter?.prev || meta.prev}`}
-                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium"
+                                href={`/docs/${prevSlug}`}
+                                className="group inline-flex items-start text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base"
                             >
-                                <span className="mr-2">←</span>
-                                Önceki Konu
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-bold tracking-wide text-gray-500 group-hover:text-gray-700">
+                                        Önceki
+                                    </span>
+                                    <span className="font-medium group-hover:underline">
+                                        {prevTitle}
+                                    </span>
+                                </div>
                             </Link>
                         )}
 
-                        {(frontmatter?.next || meta.next) && (
+                        {nextSlug && nextTitle && (
                             <Link
-                                href={`/docs/${frontmatter?.next || meta.next}`}
-                                className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm sm:text-base font-medium sm:ml-auto"
+                                href={`/docs/${nextSlug}`}
+                                className="group inline-flex items-start text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base sm:ml-auto sm:text-right"
                             >
-                                Sonraki Konu
-                                <span className="ml-2">→</span>
+                                <div className="flex flex-col sm:items-end">
+                                    <span className="text-sm font-bold tracking-wide text-gray-500 group-hover:text-gray-700">
+                                        Sonraki
+                                    </span>
+                                    <span className="font-medium group-hover:underline">
+                                        {nextTitle}
+                                    </span>
+                                </div>
                             </Link>
                         )}
                     </div>
