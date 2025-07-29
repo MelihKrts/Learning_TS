@@ -14,7 +14,7 @@ export default function Header() {
 
 
     return (
-        <header className="w-full fixed top-0 z-10 bg-blue-400 dark:bg-gray-900 shadow-md">
+        <header className="w-full fixed top-0 z-100 bg-blue-400 dark:bg-gray-900 shadow-md">
             <nav className="@container mx-auto flex py-2 px-4 justify-between items-center">
                 <div className="flex items-center gap-2">
                     <Link href="/"

@@ -50,7 +50,7 @@ export default function DocsSidebar({docTree}: DocsSidebarProps) {
             {/* Mobile Menu Button */}
             <button
                 onClick={toggleMobileMenu}
-                className="lg:hidden fixed top-20 left-4 z-50 bg-white border border-gray-200 rounded-md p-2 shadow-md hover:shadow-lg transition-shadow"
+                className="lg:hidden fixed bottom-20 right-4 z-50 bg-white border border-gray-200 rounded-md p-2 shadow-md hover:shadow-lg transition-shadow"
                 aria-label="Menüyü Aç"
             >
                 <HiOutlineMenu className="w-5 h-5 text-gray-600"/>

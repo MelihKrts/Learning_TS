@@ -211,9 +211,17 @@
 //     };
 // }
 
-import type { MDXComponents } from 'mdx/types'
+import type {MDXComponents} from 'mdx/types'
 import AlertBox from "@/app/component/ui/AlertBox";
 import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
+import {CopyButton} from "@/app/component/ui/copy-button";
+
+const detectLanguage = (className?: string): string => {
+    if (!className) return '';
+    const match = className.match(/language-(\w+)/);
+    return match ? match[1] : '';
+}
+
 export const mdxComponents: MDXComponents = {
     AlertBox,
     ImageWithCaption,
@@ -232,18 +240,71 @@ export const mdxComponents: MDXComponents = {
     p: (props) => (
         <p className="mb-4 text-gray-700 leading-relaxed" {...props} />
     ),
-    code: (props) => (
-        <code
-            className="bg-gray-100 text-pink-600 px-1 py-0.5 rounded text-sm font-mono"
-            {...props}
-        />
-    ),
-    pre: (props) => (
-        <pre
-            className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-6 text-sm"
-            {...props}
-        />
-    ),
+
+    code: (props: any) => {
+        if (props.className?.includes('language-')) {
+            return <code {...props} />;
+        }
+        return (
+            <code
+                className="bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded-md text-sm font-mono border border-purple-200 dark:border-purple-700/50"
+                {...props}
+            />
+        );
+    },
+
+    // code: (props) => (
+    //     <code
+    //         className="bg-gray-100 text-pink-600 px-1 py-0.5 rounded text-sm font-mono"
+    //         {...props}
+    //     />
+    // ),
+    // pre: (props) => (
+    //     <pre
+    //         className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-6 text-sm"
+    //         {...props}
+    //     />
+    // ),
+
+    pre: (props: any) => {
+        const codeElement = props.children?.props;
+        const language = detectLanguage(codeElement?.className);
+        const codeText = codeElement?.children || '';
+
+        return (
+            <div className="relative group mb-6">
+                {language && (
+                    <div className="absolute -top-3 left-4 z-10">
+          <span className="bg-gray-700 text-gray-200 px-3 py-1 rounded-t-md text-xs font-medium uppercase tracking-wide">
+            {language}
+          </span>
+                    </div>
+                )}
+
+                <pre
+                    className="bg-gray-900 text-gray-100 p-4 pt-6 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed shadow-lg border border-gray-700 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+                    style={{
+                        scrollBehavior: 'smooth',
+                        // iOS momentum scrolling
+                        WebkitOverflowScrolling: 'touch'
+                    }}
+                    {...props}
+                >
+        {props.children}
+      </pre>
+
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none md:hidden">
+                    <div className="bg-gray-700/80 text-gray-300 px-2 py-1 rounded text-xs animate-pulse">
+                        →
+                    </div>
+                </div>
+
+                <CopyButton text={codeText} />
+            </div>
+        );
+    },
+
+
     ul: (props) => (
         <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 ml-2" {...props} />
     ),
@@ -256,15 +317,26 @@ export const mdxComponents: MDXComponents = {
     a: (props) => (
         <a className="text-blue-600 no-underline hover:text-blue-800 break-all leading-relaxed transition-colors" {...props} />
     ),
+    // blockquote: (props) => (
+    //     <blockquote
+    //         className="border-l-4 rounded-md border-blue-500 px-4  text-gray-600 mb-4 bg-blue-50 py-2"
+    //         {...props}
+    //     />
+    // ),
     blockquote: (props) => (
         <blockquote
-            className="border-l-4 rounded-md border-blue-500 px-4  text-gray-600 mb-4 bg-blue-50 py-2"
+            className="border-l-4 border-blue-500 px-4 text-gray-600 mb-4 bg-blue-50 py-2 rounded-tr-md rounded-br-md"
+            {...props}
+        />
+    ),
+    kbd: (props: any) => (
+        <kbd
+            className="inline-flex items-center px-2 py-1 mx-1 text-xs font-semibold text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm font-mono min-w-[24px] justify-center"
             {...props}
         />
     ),
 }
 
-// Client component için hook
 export function useMDXComponents(components: MDXComponents): MDXComponents {
     return {
         ...mdxComponents,
