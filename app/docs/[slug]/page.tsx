@@ -187,6 +187,10 @@ interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
+interface ClassNameElement extends Element {
+    properties: Element["properties"] & { className?: string[] | string };
+}
+
 function getNavigationTitle(slug: string): string {
     try {
         const meta = getMdxPageMeta(slug);
@@ -242,10 +246,15 @@ export default async function DocPage({ params }: PageProps) {
                                         node.children = [{ type: "text", value: " " }];
                                     }
                                 },
-                                onVisitHighlightedLine(node: Element) {
-                                    node.properties.className?.push("highlighted");
+                                onVisitHighlightedLine(node: ClassNameElement) {
+                                    const className = node.properties.className;
+                                    if (Array.isArray(className)) {
+                                        className.push("highlighted");
+                                    } else {
+                                        node.properties.className = ["highlighted"];
+                                    }
                                 },
-                                onVisitHighlightedWord(node: Element) {
+                                onVisitHighlightedWord(node: ClassNameElement) {
                                     node.properties.className = ["highlighted-word"];
                                 },
                             },
