@@ -1,10 +1,10 @@
 // lib/shiki.ts
-const { getHighlighter } = require('shiki/core');
+import { createHighlighter } from "shiki";
 
 export const loadHighlighter = async () => {
-    const highlighter = await getHighlighter({
-        theme: 'github-dark',
-        langs: ['ts', 'tsx', 'js', 'html', 'css', 'bash', 'json'],
+    const highlighter = await createHighlighter({
+        themes: ['github-dark'],
+        langs: ["ts", "tsx", "js", "html", "css", "bash", "json"],
     });
 
     return highlighter;
