@@ -11,3 +11,12 @@ const isOpen: boolean = true;
 
 // BigInt
 const numTwo: bigint = 1234567890123456789012345678901234567890n;
+
+// Symbol
+const sym1 = Symbol("Symbol 1")
+const sym2 = Symbol("Symbol 1")
+console.log(sym1 === sym2)
+
+// Type Compatibility
+let name = 15
+name = "Deneme"

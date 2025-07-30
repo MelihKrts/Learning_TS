@@ -44,3 +44,15 @@ const isOpen: boolean = true;
 const numTwo: bigint = 1234567890123456789012345678901234567890n;
 ```
 
+# Symbol
+İlkel veri türüdür. Değişmez ve benzersiz yapıdır.
+
+```ts
+const sym1 = Symbol("Symbol 1")
+const sym2 = Symbol("Symbol 1")
+console.log(sym1 === sym2)
+// false değeri döndürecektir.
+```
+
+# Tür Ataması
+TypeScript, tür denetçisidir. Yapısı gereği değişken vs tür kontrolü yapar. Tür uyuşmazlığı durumunda uyarı döndürür.

@@ -8,7 +8,6 @@ const nextConfig = {
 }
 
 const withMDX = createMDX({
-    // Add content plugins here, as desired
 })
 
 // Merge MDX config with Next.js config

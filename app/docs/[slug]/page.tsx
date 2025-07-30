@@ -3,11 +3,11 @@ import { getMdxPageMeta, getAllDocSlugs } from "@/lib/getMdxPageMeta";
 import { compileMDX } from "next-mdx-remote/rsc";
 import fs from "fs";
 import path from "path";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import rehypePrettyCode from "rehype-pretty-code";
 import { mdxComponents } from "@/mdx-components";
 
-// Frontmatter tipini tanımla
 interface Frontmatter {
     title?: string;
     description?: string;
@@ -20,12 +20,10 @@ interface Frontmatter {
     lastUpdated?: string;
 }
 
-// Next.js 15 için params tipi
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-// Navigation bilgilerini almak için helper fonksiyon
 function getNavigationTitle(slug: string): string {
     try {
         const meta = getMdxPageMeta(slug);
@@ -35,19 +33,13 @@ function getNavigationTitle(slug: string): string {
     }
 }
 
-// SSG için zorunlu - tüm slug'ları build time'da generate et
 export async function generateStaticParams() {
     const slugs = getAllDocSlugs();
-
-    return slugs.map((slug) => ({
-        slug: slug,
-    }));
+    return slugs.map((slug) => ({ slug }));
 }
 
-// SEO için metadata - Next.js 15 uyumlu
 export async function generateMetadata({ params }: PageProps) {
     const { slug } = await params;
-
     try {
         const meta = getMdxPageMeta(slug);
         return {
@@ -63,10 +55,8 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function DocPage({ params }: PageProps) {
     const { slug } = await params;
-
     const filePath = path.join(process.cwd(), "content", `${slug}.mdx`);
 
-    // Dosya kontrolü
     if (!fs.existsSync(filePath)) {
         notFound();
     }
@@ -76,34 +66,50 @@ export default async function DocPage({ params }: PageProps) {
 
         const { content, frontmatter } = await compileMDX<Frontmatter>({
             source: mdxSource,
-            options: { parseFrontmatter: true },
-            components: mdxComponents
+            options: {
+                parseFrontmatter: true,
+                mdxOptions: {
+                    rehypePlugins: [
+                        [
+                            rehypePrettyCode,
+                            {
+                                theme: 'andromeeda',
+                                // defaultLang: 'txt',
+                                onVisitLine(node:any) {
+                                    // Satırları boş bile olsa koru
+                                    if (node.children.length === 0) {
+                                        node.children = [{ type: 'text', value: ' ' }];
+                                    }
+                                },
+                                onVisitHighlightedLine(node:any) {
+                                    node.properties.className.push('highlighted');
+                                },
+                                onVisitHighlightedWord(node:any) {
+                                    node.properties.className = ['highlighted-word'];
+                                },
+                            },
+                        ],
+                    ],
+                }
+            },
+            components: mdxComponents,
         });
 
-        // Meta bilgilerini al (frontmatter + fallback)
         const meta = getMdxPageMeta(slug);
-
-        // Navigation için konu başlıklarını al
         const prevSlug = frontmatter?.prev || meta.prev;
         const nextSlug = frontmatter?.next || meta.next;
 
-        // Başlık önceliği: frontmatter'daki özel başlık > otomatik başlık
-        const prevTitle = prevSlug ? (
-            frontmatter?.prevTitle ||
-            meta.prevTitle ||
-            getNavigationTitle(prevSlug)
-        ) : null;
+        const prevTitle = prevSlug
+            ? frontmatter?.prevTitle || meta.prevTitle || getNavigationTitle(prevSlug)
+            : null;
 
-        const nextTitle = nextSlug ? (
-            frontmatter?.nextTitle ||
-            meta.nextTitle ||
-            getNavigationTitle(nextSlug)
-        ) : null;
+        const nextTitle = nextSlug
+            ? frontmatter?.nextTitle || meta.nextTitle || getNavigationTitle(nextSlug)
+            : null;
 
         return (
             <div className="w-full">
-                {/* Başlık */}
-                <header className="mb-6 lg:mb-8">
+                <div className="mb-6 lg:mb-8">
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-900">
                         {frontmatter?.title || meta.title}
                     </h1>
@@ -112,14 +118,10 @@ export default async function DocPage({ params }: PageProps) {
                             {frontmatter?.description || meta.description}
                         </p>
                     )}
-                </header>
+                </div>
 
-                {/* MDX İçerik */}
-                <article className="max-w-none">
-                    {content}
-                </article>
+                <article className="max-w-none">{content}</article>
 
-                {/* Navigation */}
                 <nav className="mt-8 lg:mt-12 pt-6 lg:pt-8 border-t border-gray-200">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                         {prevSlug && prevTitle && (
@@ -128,28 +130,23 @@ export default async function DocPage({ params }: PageProps) {
                                 className="group inline-flex items-start text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base"
                             >
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-bold tracking-wide text-gray-500 group-hover:text-gray-700">
-                                        Önceki
-                                    </span>
-                                    <span className="font-medium group-hover:underline">
-                                        {prevTitle}
-                                    </span>
+                  <span className="text-sm font-bold tracking-wide text-gray-500 group-hover:text-gray-700">
+                    Önceki
+                  </span>
+                                    <span className="font-medium group-hover:underline">{prevTitle}</span>
                                 </div>
                             </Link>
                         )}
-
                         {nextSlug && nextTitle && (
                             <Link
                                 href={`/docs/${nextSlug}`}
                                 className="group inline-flex items-start text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base sm:ml-auto sm:text-right"
                             >
                                 <div className="flex flex-col sm:items-end">
-                                    <span className="text-sm font-bold tracking-wide text-gray-500 group-hover:text-gray-700">
-                                        Sonraki
-                                    </span>
-                                    <span className="font-medium group-hover:underline">
-                                        {nextTitle}
-                                    </span>
+                  <span className="text-sm font-bold tracking-wide text-gray-500 group-hover:text-gray-700">
+                    Sonraki
+                  </span>
+                                    <span className="font-medium group-hover:underline">{nextTitle}</span>
                                 </div>
                             </Link>
                         )}

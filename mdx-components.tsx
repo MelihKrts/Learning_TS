@@ -214,7 +214,8 @@
 import type {MDXComponents} from 'mdx/types'
 import AlertBox from "@/app/component/ui/AlertBox";
 import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
-import {CopyButton} from "@/app/component/ui/copy-button";
+import {CopyButton} from "@/app/component/ui/CopyButton";
+
 
 const detectLanguage = (className?: string): string => {
     if (!className) return '';
@@ -241,17 +242,6 @@ export const mdxComponents: MDXComponents = {
         <p className="mb-4 text-gray-700 leading-relaxed" {...props} />
     ),
 
-    code: (props: any) => {
-        if (props.className?.includes('language-')) {
-            return <code {...props} />;
-        }
-        return (
-            <code
-                className="bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded-md text-sm font-mono border border-purple-200 dark:border-purple-700/50"
-                {...props}
-            />
-        );
-    },
 
     // code: (props) => (
     //     <code
@@ -266,41 +256,74 @@ export const mdxComponents: MDXComponents = {
     //     />
     // ),
 
-    pre: (props: any) => {
-        const codeElement = props.children?.props;
-        const language = detectLanguage(codeElement?.className);
-        const codeText = codeElement?.children || '';
+    // pre: (props: any) => {
+    //     const codeElement = props.children?.props;
+    //     const language = detectLanguage(codeElement?.className);
+    //     const codeText = codeElement?.children || '';
+    //
+    //     return (
+    //         <div className="relative group mb-6">
+    //             {language && (
+    //                 <div className="absolute -top-3 left-4 z-10">
+    //       <span className="bg-gray-700 text-gray-200 px-3 py-1 rounded-t-md text-xs font-medium uppercase tracking-wide">
+    //         {language}
+    //       </span>
+    //                 </div>
+    //             )}
+    //
+    //             <pre
+    //                 className=" text-gray-100 p-4 pt-6 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed shadow-lg scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+    //                 style={{
+    //                     scrollBehavior: 'smooth',
+    //                     // iOS momentum scrolling
+    //                     WebkitOverflowScrolling: 'touch'
+    //                 }}
+    //                 {...props}
+    //             >
+    //     {props.children}
+    //   </pre>
+    //
+    //             <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none md:hidden">
+    //                 <div className="bg-gray-700/80 text-gray-300 px-2 py-1 rounded text-xs animate-pulse">
+    //                     →
+    //                 </div>
+    //             </div>
+    //
+    //             <CopyButton text={codeText} />
+    //         </div>
+    //     );
+    // },
+
+    pre: (props) => <div {...props} className="code-block" />,
+    code: (props: any) => {
+        const hasLang = props["data-language"];
+        const lang = hasLang ? props["data-language"] : "txt";
+        const filename = props["data-filename"];
+
+        function extractText(node: any): string {
+            if (typeof node === "string") return node;
+            if (Array.isArray(node)) return node.map(extractText).join("");
+            if (typeof node === "object" && node?.props?.children) return extractText(node.props.children);
+            return "";
+        }
+
+        const text = extractText(props.children);
 
         return (
-            <div className="relative group mb-6">
-                {language && (
-                    <div className="absolute -top-3 left-4 z-10">
-          <span className="bg-gray-700 text-gray-200 px-3 py-1 rounded-t-md text-xs font-medium uppercase tracking-wide">
-            {language}
-          </span>
-                    </div>
-                )}
+            <figure className="relative group my-4 rounded-xl overflow-hidden shadow-sm rounded-full">
+                <figcaption
+                    className="absolute top-0 right-2 text-xs font-mono text-gray-400 px-2 py-1 rounded-bl z-10">
+                    {lang}
+                </figcaption>
 
-                <pre
-                    className="bg-gray-900 text-gray-100 p-4 pt-6 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed shadow-lg border border-gray-700 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
-                    style={{
-                        scrollBehavior: 'smooth',
-                        // iOS momentum scrolling
-                        WebkitOverflowScrolling: 'touch'
-                    }}
-                    {...props}
-                >
-        {props.children}
-      </pre>
-
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none md:hidden">
-                    <div className="bg-gray-700/80 text-gray-300 px-2 py-1 rounded text-xs animate-pulse">
-                        →
-                    </div>
+                <div className="absolute top-0 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <CopyButton text={text}/>
                 </div>
 
-                <CopyButton text={codeText} />
-            </div>
+                <pre className="mt-6 whitespace-pre-wrap break-words overflow-x-auto text-sm leading-relaxed text-gray-100 p-4 rounded-none">
+                <code className={`language-${lang}`}>{props.children}</code>
+            </pre>
+            </figure>
         );
     },
 

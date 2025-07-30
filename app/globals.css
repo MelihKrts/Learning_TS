@@ -73,3 +73,49 @@ kbd:hover {
   background-color: #f3f4f6;
   border-color: #c6cbd1;
 }
+
+/* globals.css'e ekle */
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 5rem; /* navbar + extra space */
+}
+
+/* Target pseudo-class styling */
+:target {
+  border-left: 4px solid #3b82f6;
+  background-color: #eff6ff;
+  padding-left: 1rem;
+  margin-left: -1rem;
+  border-radius: 0.375rem;
+}
+
+
+[data-line] {
+  display: block;
+  padding-left: 1rem;
+  border-left: 2px solid transparent;
+}
+
+[data-line][data-highlighted="true"] {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: #facc15; /* Tailwind yellow-400 */
+}
+
+code {
+  counter-reset: line;
+}
+
+[data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2rem;
+  margin-left: -2rem;
+  text-align: right;
+  padding-right: 0.75rem;
+  color: #6b7280; /* gray-500 */
+}
+
+figure > div {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}

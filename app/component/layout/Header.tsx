@@ -31,7 +31,7 @@ export default function Header() {
                             href="/docs/started"
                             className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors"
                         >
-                            MDX Page
+                            Started
                         </Link>
                     </li>
                 </ul>
@@ -55,7 +55,7 @@ export default function Header() {
                                 href="/docs/started"
                                 onClick={() => setIsOpen(false)}
                                 className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors">
-                                MDX Page
+                                Started
                             </Link>
                         </li>
                     </ul>

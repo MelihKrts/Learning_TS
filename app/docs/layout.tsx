@@ -1,5 +1,5 @@
 import {getDocTree} from "@/lib/getMdxPageMeta";
-import DocsSidebar from "@/app/component/DocsSidebar";
+import DocsSidebar from "@/app/component/ui/DocsSidebar";
 
 export default function DocsLayout({children,}: { children: React.ReactNode; }) {
     const docTree = getDocTree();

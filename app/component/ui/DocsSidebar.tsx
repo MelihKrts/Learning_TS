@@ -65,7 +65,7 @@ export default function DocsSidebar({docTree}: DocsSidebarProps) {
             )}
 
             {/* Sidebar */}
-            <aside className={` fixed left-0 top-16 h-[calc(100vh-4rem)] bg-gray-50 border-r border-gray-200  transition-all duration-300 z-50
+            <aside className={` fixed left-0 top-16 h-[calc(100dvh-4rem)] bg-gray-50 border-r border-gray-200  transition-all duration-300 z-50
                 ${isMobile
                 ? `${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} w-80`
                 : `${isCollapsed ? 'w-12' : 'w-64'} translate-x-0`
