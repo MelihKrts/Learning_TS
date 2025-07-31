@@ -294,7 +294,7 @@ export const mdxComponents: MDXComponents = {
     //     );
     // },
 
-    pre: (props) => <div {...props} className="code-block" />,
+    pre: (props) => <div {...props} className="code-block"/>,
     code: (props: any) => {
         const hasLang = props["data-language"];
         const lang = hasLang ? props["data-language"] : "txt";
@@ -310,19 +310,35 @@ export const mdxComponents: MDXComponents = {
         const text = extractText(props.children);
 
         return (
-            <figure className="relative group my-4 rounded-xl overflow-hidden shadow-sm rounded-full">
+            // <figure className="relative group my-4 rounded-xl overflow-hidden shadow-sm rounded-full">
+            //     <figcaption
+            //         className="absolute top-0 right-2 text-xs font-mono text-gray-400 px-2 py-1 rounded-bl z-10">
+            //         {lang}
+            //     </figcaption>
+            //
+            //     <div className="absolute top-0 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+            //         <CopyButton text={text}/>
+            //     </div>
+            //
+            //     <pre className="mt-6 whitespace-pre-wrap break-words overflow-x-auto text-sm leading-relaxed text-gray-100 p-4 rounded-none">
+            //     <code className={`language-${lang}`}>{props.children}</code>
+            // </pre>
+            // </figure>
+            <figure className="relative my-2 rounded-xl overflow-hidden shadow-sm">
                 <figcaption
                     className="absolute top-0 right-2 text-xs font-mono text-gray-400 px-2 py-1 rounded-bl z-10">
                     {lang}
                 </figcaption>
 
-                <div className="absolute top-0 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Kopyala butonunu her zaman görünür yap */}
+                <div className="absolute top-0 left-2 z-10">
                     <CopyButton text={text}/>
                 </div>
 
-                <pre className="mt-6 whitespace-pre-wrap break-words overflow-x-auto text-sm leading-relaxed text-gray-100 p-4 rounded-none">
-                <code className={`language-${lang}`}>{props.children}</code>
-            </pre>
+                <pre
+                    className="mt-6 whitespace-pre-wrap break-words overflow-x-auto text-sm leading-none text-gray-100 p-4 rounded-none">
+                    <code className={`language-${lang}`}>{props.children}</code>
+                </pre>
             </figure>
         );
     },

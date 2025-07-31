@@ -56,3 +56,16 @@ console.log(sym1 === sym2)
 
 # Tür Ataması
 TypeScript, tür denetçisidir. Yapısı gereği değişken vs tür kontrolü yapar. Tür uyuşmazlığı durumunda uyarı döndürür.
+
+```ts
+let value: string = "Pilli Bebek"
+value = 15;
+console.log(value)
+// TS2322: Type 'number' is not assignable to type 'string'.
+// TypeScript burada string türüne sahip olan değerin sayısal değere eşit olamayacağını belirtiyor.
+```
+
+## Implict Type
+
+# Kaynakça
+- [https://www.tutorialspoint.com/typescript/typescript_type_compatibility.htm](https://www.tutorialspoint.com/typescript/typescript_type_compatibility.htm)

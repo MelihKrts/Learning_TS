@@ -1,5 +1,7 @@
 import {getDocTree} from "@/lib/getMdxPageMeta";
 import DocsSidebar from "@/app/component/ui/DocsSidebar";
+import {PageLoadTime} from "@/app/component/ui/PageLoad";
+import React from "react";
 
 export default function DocsLayout({children,}: { children: React.ReactNode; }) {
     const docTree = getDocTree();
@@ -12,6 +14,7 @@ export default function DocsLayout({children,}: { children: React.ReactNode; }) 
                     {children}
                 </div>
             </div>
+            <PageLoadTime/>
         </>
     )
 }
