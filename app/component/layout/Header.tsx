@@ -5,22 +5,21 @@ import Image from "next/image";
 import {HiOutlineMenu} from "react-icons/hi";
 import {MdOutlineClose} from "react-icons/md";
 
-
 export default function Header() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
 
-
     return (
         <header className="w-full fixed top-0 z-100 bg-blue-600 dark:bg-gray-900 shadow-md">
             <nav className="@container mx-auto flex py-2 px-4 justify-between items-center">
                 <div className="flex items-center gap-2">
                     <Link href="/"
-                          className="text-2xl flex items-center justify-center   text-white dark:text-gray-100">
+                          className="text-2xl flex items-center justify-center text-white dark:text-gray-100">
                         <Image src="/logos/ts_logo.svg" alt="TypeScript Logo" width={35} height={35}/>
-                         <h2 className="pt-2 px-2 text-white dark:text-gray-100">Learn TS</h2>
+                        {/* h2 yerine span kullanarak başlık hiyerarşisini bozmayalım */}
+                        <span className="pt-2 px-2 text-white dark:text-gray-100 font-semibold">Learn TS</span>
                     </Link>
                 </div>
 
@@ -40,7 +39,7 @@ export default function Header() {
                 <button
                     onClick={toggleMenu}
                     aria-label="Toggle menu"
-                    className="@4xl:hidden text-2xl  cursor-pointer text-white dark:text-gray-300"
+                    className="@4xl:hidden text-2xl cursor-pointer text-white dark:text-gray-300"
                 >
                     {isOpen ? <MdOutlineClose/> : <HiOutlineMenu/>}
                 </button>

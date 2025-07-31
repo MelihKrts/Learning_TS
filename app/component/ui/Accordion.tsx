@@ -41,11 +41,8 @@ export default function Accordion() {
                     <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg">
                         <Image src="/logos/ts_logo.svg" alt="TypeScript Logo" priority width={40} height={40}/>
                     </div>
-                    {/*<h1 className="text-[var(--text-responsive)] font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">*/}
-                    {/*    Learn TypeScript*/}
-                    {/*</h1>*/}
-
-                    <h1 className=" text-[clamp(2rem,4vw,4rem)] font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+                    {/* Ana başlık h1 olarak doğru */}
+                    <h1 className="text-[clamp(2rem,4vw,4rem)] font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
                         Learn TypeScript
                     </h1>
                 </div>
@@ -57,14 +54,14 @@ export default function Accordion() {
                     <div key={item.id}
                          className="group mb-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 overflow-hidden transition-all duration-300 hover:scale-[1.02]">
 
-                        {/* Header */}
+                        {/* Header - h4 yerine h2 kullanarak doğru hiyerarşi */}
                         <div
                             onClick={() => toggle(item.id)}
-                            className="flex justify-between  items-center p-4 cursor-pointer bg-gradient-to-r from-slate-50 to-gray-50 hover:from-blue-50 hover:to-teal-50 transition-all duration-300"
+                            className="flex justify-between items-center p-4 cursor-pointer bg-gradient-to-r from-slate-50 to-gray-50 hover:from-blue-50 hover:to-teal-50 transition-all duration-300"
                         >
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-700">
+                            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-700">
                                 {item.title}
-                            </h4>
+                            </h2>
                             <div
                                 className="ml-4 p-2 rounded-full bg-white shadow-sm group-hover:bg-blue-100 transition-all duration-300">
                                 {open === item.id ?
@@ -88,7 +85,6 @@ export default function Accordion() {
                     </div>
                 ))}
             </div>
-
         </div>
     )
 }

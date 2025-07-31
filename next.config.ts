@@ -2,13 +2,13 @@ import createMDX from '@next/mdx'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Configure `pageExtensions` to include content and MDX files
     pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
-    // Optionally, add any other Next.js config belowü
+    compress: true,
+    reactStrictMode: true,
+    turbopack: {
+        resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json'],
+    }
 }
 
-const withMDX = createMDX({
-})
-
-// Merge MDX config with Next.js config
+const withMDX = createMDX({})
 export default withMDX(nextConfig)
