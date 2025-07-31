@@ -62,13 +62,15 @@ export default function Accordion() {
                             onClick={() => toggle(item.id)}
                             className="flex justify-between  items-center p-4 cursor-pointer bg-gradient-to-r from-slate-50 to-gray-50 hover:from-blue-50 hover:to-teal-50 transition-all duration-300"
                         >
-                            <h3 className="text-lg  font-semibold text-gray-800 group-hover:text-blue-700 transition-colors duration-300">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-700">
                                 {item.title}
                             </h3>
-                            <div className="ml-4 p-2 rounded-full bg-white shadow-sm group-hover:bg-blue-100 transition-all duration-300">
+                            <div
+                                className="ml-4 p-2 rounded-full bg-white shadow-sm group-hover:bg-blue-100 transition-all duration-300">
                                 {open === item.id ?
                                     <FaAngleUp className="text-blue-600 transition-transform duration-300 rotate-0"/> :
-                                    <FaAngleDown className="text-gray-500 group-hover:text-blue-600 transition-all duration-300"/>
+                                    <FaAngleDown
+                                        className="text-gray-500 group-hover:text-blue-600 transition-all duration-300"/>
                                 }
                             </div>
                         </div>
