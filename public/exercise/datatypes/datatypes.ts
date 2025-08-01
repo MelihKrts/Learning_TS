@@ -29,6 +29,7 @@ console.log(age)
 
 // Implicit Types
 const arr = ["TS", "JS", "TSX"]
+//@ts-ignore
 arr [3] = 15;
 
 // Special Types
