@@ -65,7 +65,46 @@ console.log(value)
 // TypeScript burada string türüne sahip olan değerin sayısal değere eşit olamayacağını belirtiyor.
 ```
 
-## Implict Type
+# Implict - Explicit Types
+TypeScript yapısı gereği sıkı güvenlikli ve tür denetçisidir. İlgili değişkenin değerin türünü TypeScript otomatik olarak algıladığı gibi geliştirici de ilgili değerin hangi türde olacağını belirtebilir.
+
+## Explicit (Açık Tür) Types
+TypeScript'e değerin hangi tür olduğunu açıklanan türdür. Örnek;
+
+```ts
+// Explicit Types
+const age : number = 24;
+console.log(age)
+
+// Programcı burada age adlı değişkenin number türüne olduğu belirtiliyor number türünden başka değer alamayacak alırsa hata verecektir.
+```
+
+## Implicit (Kapalı Tür) Types
+Bu türde TypeScript'e değerin hangi tür olduğu belirtmeye gerek kalmaz.
+
+```ts
+const arr = ["TS", "JS", "TSX"]
+arr [3] = 15;
+
+// TS2322: Type 'number' is not assignable to type 'string'.
+// TypeScript burada array otomatik olarak string türüne eşit olduğunu belirliyor. Bu dizi sadece string türünden değer alabilir. Explicit Types farkı kısaca budur.
+```
+
+# Special (Özel Tür) Types
+TypeScript'e özgü bazı özel tür vardır bunlar, <kbd>any</kbd>  <kbd>never</kbd>  <kbd>unknown</kbd>
+
+## Any
+TypeScript'te değer tipi hatalarını göz ardı edilmesini sağlayan türdür. Kullanılmaması önerilir. Tür denetimini kaldırır bu sayede *TS2322* hatası ile karşılaşmayız.
+
+```ts
+let anyExp: any = false;
+anyExp = "true"
+anyExp = {name: "John"}
+console.log(anyExp)
+```
+
+## Never
+
 
 # Kaynakça
 - [https://www.tutorialspoint.com/typescript/typescript_type_compatibility.htm](https://www.tutorialspoint.com/typescript/typescript_type_compatibility.htm)

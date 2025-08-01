@@ -25,8 +25,8 @@ export default function RootLayout({children,}: Readonly<{
 }>) {
     return (
         <html lang="tr" className={delivery.className}>
-        <link rel="icon" href="/favicon.ico" type="image/svg+xml"/>
-
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+        <link rel="manifest" href="/manifest.json"/>
         <body>
         <Header/>
         <main className="mt-16 min-h-dvh w-full relative">
