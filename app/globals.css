@@ -28,6 +28,8 @@ kbd {
     padding: 3px 6px;
     vertical-align: middle;
     white-space: nowrap;
+    cursor: context-menu;
+    transition: all 0.2s ease;
 }
 
 kbd:hover {

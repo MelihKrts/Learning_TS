@@ -3,11 +3,6 @@ import AlertBox from "@/app/component/ui/AlertBox";
 import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
 import {CopyButton} from "@/app/component/ui/CopyButton";
 
-const detectLanguage = (className?: string): string => {
-    if (!className) return '';
-    const match = className.match(/language-(\w+)/);
-    return match ? match[1] : '';
-}
 
 export const mdxComponents: MDXComponents = {
     AlertBox,
@@ -32,7 +27,7 @@ export const mdxComponents: MDXComponents = {
     code: (props: any) => {
         const hasLang = props["data-language"];
         const lang = hasLang ? props["data-language"] : "txt";
-        const filename = props["data-filename"];
+
 
         function extractText(node: any): string {
             if (typeof node === "string") return node;
@@ -46,7 +41,7 @@ export const mdxComponents: MDXComponents = {
         return (
             <figure className="relative my-2 rounded-xl overflow-hidden shadow-sm">
                 <figcaption
-                    className="absolute top-0 right-2 text-xs font-mono text-gray-400 px-2 py-1 rounded-bl z-10">
+                    className="absolute top-0 right-2 text-md font-mono text-gray-400 px-2 py-1 rounded-bl z-10">
                     {lang}
                 </figcaption>
 
@@ -54,7 +49,7 @@ export const mdxComponents: MDXComponents = {
                     <CopyButton text={text}/>
                 </div>
 
-                <pre className="mt-6 whitespace-pre-wrap break-words overflow-x-auto text-sm leading-none text-gray-100 p-4 rounded-none">
+                <pre className="mt-6 whitespace-pre-wrap break-words overflow-x-auto text-sm leading-none text-gray-100 p-6 rounded-none">
                     <code className={`language-${lang}`}>{props.children}</code>
                 </pre>
             </figure>

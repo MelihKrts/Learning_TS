@@ -35,8 +35,10 @@ export default function AlertBox({ children, type, title }: Props) {
                         </h4>
                     )}
 
-                    <div className="text-base leading-relaxed [&>p]:py-1 [&>p]:m-0">
-                        {children}
+                    <div className="text-base leading-relaxed [&>p]:py-2 [&>p]:m-0">
+                        <>
+                            {children}
+                        </>
                     </div>
                 </div>
             </div>

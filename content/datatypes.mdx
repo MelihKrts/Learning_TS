@@ -7,6 +7,7 @@ prevTitle: "Başlamadan Önce"
 ---
 
 import ImageWithCaption from "../app/component/ui/ImageWithCaption";
+import AlertBox from "@/app/component/ui/AlertBox";
 
 <ImageWithCaption
     alt="TypeScript Veri Türleri"
@@ -20,6 +21,7 @@ Her Programlama dilinde olduğu gibi TypeScript'te de veri türleri bulunmaktad�
 Metinsel veri türleri için kullanılır.
 
 ```ts
+// String
 const text: string = "Hello World";
 ```
 
@@ -27,6 +29,7 @@ const text: string = "Hello World";
 Sayısal işlemlerde kullanılır.
 
 ```ts
+// Number
 const numOne: number = 15;
 ```
 
@@ -34,6 +37,7 @@ const numOne: number = 15;
 Mantıksal değerdir. <kbd>true</kbd> <kbd>false</kbd> değerinden birini alır.
 
 ```ts
+// Boolean
 const isOpen: boolean = true;
 ```
 
@@ -41,6 +45,7 @@ const isOpen: boolean = true;
 Çok büyük tam sayıları temsil eder.
 
 ```ts
+// Bigint
 const numTwo: bigint = 1234567890123456789012345678901234567890n;
 ```
 
@@ -48,9 +53,11 @@ const numTwo: bigint = 1234567890123456789012345678901234567890n;
 İlkel veri türüdür. Değişmez ve benzersiz yapıdır.
 
 ```ts
+// Symbol
 const sym1 = Symbol("Symbol 1")
 const sym2 = Symbol("Symbol 1")
 console.log(sym1 === sym2)
+
 // false değeri döndürecektir.
 ```
 
@@ -61,6 +68,7 @@ TypeScript, tür denetçisidir. Yapısı gereği değişken vs tür kontrolü ya
 let value: string = "Pilli Bebek"
 value = 15;
 console.log(value)
+
 // TS2322: Type 'number' is not assignable to type 'string'.
 // TypeScript burada string türüne sahip olan değerin sayısal değere eşit olamayacağını belirtiyor.
 ```
@@ -83,6 +91,7 @@ console.log(age)
 Bu türde TypeScript'e değerin hangi tür olduğu belirtmeye gerek kalmaz.
 
 ```ts
+// Implicit Types
 const arr = ["TS", "JS", "TSX"]
 arr [3] = 15;
 
@@ -97,14 +106,95 @@ TypeScript'e özgü bazı özel tür vardır bunlar, <kbd>any</kbd>  <kbd>never<
 TypeScript'te değer tipi hatalarını göz ardı edilmesini sağlayan türdür. Kullanılmaması önerilir. Tür denetimini kaldırır bu sayede *TS2322* hatası ile karşılaşmayız.
 
 ```ts
+// Any
 let anyExp: any = false;
 anyExp = "true"
 anyExp = {name: "John"}
 console.log(anyExp)
 ```
 
-## Never
+<AlertBox type="warning" title="Any Kullanmayın">
+    Any özel türü, tür kontrolü yapmamaktadır. Hem TypeScript özelliğinden mahrum (TypeScript hata yakalama ve güvenli kod yazma zayıflatır.) bırakır. TypeScript yapısı gereği temiz kod ve veri kontrolüne önem verir.
+</AlertBox>
 
+## Never
+Değer dödnürmez. Hata fırlatıp  programı sonlandıran fonksiyon özelliği taşır.
+
+```ts
+// Never Type
+type Shape = "circle" | "square"
+
+function fail(msg: string): never {
+    throw new Error(msg);
+}
+
+function getArea(shape: Shape): number {
+    if (shape === "circle") {
+        return Math.PI * 2 * 2 // area
+    } else if (shape === "square") {
+        return 4 * 4
+    } else {
+        return fail(`Unexcepted shape: ${shape}`);
+    }
+}
+
+console.log(getArea("circle"))
+console.log(getArea("square"))
+console.log(getArea("pentagon"))
+
+// Kodun özeti;
+// shape adında tür belirlendi 2 değer veya her ikisindeki değer ataması yapılıyor.
+/* fail() fonksiyonu yukaridaki tanımın asıl amacı denilebilir.
+parametreli fonksiyondur. Error fırlatır never olduğundan değer döndürmez hata döndürür.
+ */
+
+// shape türünü referans alır.
+
+// Beklenmeyen durumda never yapısı devreye girerek eksik durum veya belirtilmeyen kod,fonksiyon vs çalışmasını engeller.
+```
+
+# Unknown
+Türün değeri bilinmiyor ama tür denetimi gerekliyse unknown kullanılabilir.
+
+```ts
+// Unknown
+let value = unknown;
+value = 1;
+value = "text"
+value = {name: "John"}
+// Any ile benzerdir tek farkı işlem yapmadan önce türü kontrol eder
+
+let valNameErr = value.name()
+console.log(valNameErr)
+// TS 18046 value is of type unknown
+
+// Örnek 1 Array ile Kullanım
+value = [1, 2, 3, "A"]
+const valArr = (value as any).sort((a: any, b: any) => a - b)
+// type guard ile kodu daha fazla uzatmamak, yeni başlayanlara hitap ettiği ve karıştırmamak için any kullanıldı any kullanmamaya özen gösterin. İleri ki konuda type guard gösterilecektir.
+console.log(valArr)
+
+// Örnek 2 Object ile Kullanım
+const valObj = (value as { name: string, age: number })
+console.log(`Name: ${valObj.name}, Age: ${valObj.age} `)
+console.log(valObj)
+```
+
+<AlertBox type="info" title="Unknown Any Farkı">
+    <p><kbd>unknown</kbd> ile <kbd>any</kbd> arasındaki fark;</p>
+    <p>Any tip güvenliğini devre dışı bırakırken, unknown tip güvenliğini korumaya devam eder.</p>
+</AlertBox>
+
+# Egzersiz Dosyası
+
+<a href="/exercise/datatypes/datatypes.ts"
+download
+className="text-blue-600 underline hover:text-blue-800"
+>
+    Datatypes.ts
+</a>
 
 # Kaynakça
 - [https://www.tutorialspoint.com/typescript/typescript_type_compatibility.htm](https://www.tutorialspoint.com/typescript/typescript_type_compatibility.htm)
+- [https://www.geeksforgeeks.org/typescript/typescript-never/](https://www.geeksforgeeks.org/typescript/typescript-never/)
+- [https://www.typescripttutorial.net/typescript-tutorial/typescript-unknown-type/](https://www.typescripttutorial.net/typescript-tutorial/typescript-unknown-type/)
