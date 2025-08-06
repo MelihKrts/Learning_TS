@@ -1,0 +1,81 @@
+---
+title: "tsconfig.json"
+next: "datatypes"
+prev: "started"
+nextTitle: "Veri Türleri"
+prevTitle: "Başlamadan Önce"
+---
+
+
+<kbd>tsconfig.json</kbd> dosyası TypeScript projelerinin en önemli dosyasıdır. <kbd>tsconfig.json</kbd> yapılandırma dosyasıdır. Bu dosyada TypeScript kodunun JavaScript'e derlemek için gereken dosyanın yanı sıra seçenekler üzerinde değişiklikler sayesinde tür denetimini azaltabilir veya arttırabilirsiniz.
+
+# tsconfig.json İçeriği
+tsconfig dosya yapısında bulunan özellikler; <br/>
+Basit bir <kbd>tsconfig.json</kbd> yapısı
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules","public/exercise/**/*"],
+}
+```
+
+## Compiler Options
+TypeScript'in nasıl çalışacağını belirler.
+- **target**: Hangi JavaScript dil sürümünün referans alacağı belirlenir.
+- **lib**: TypeScript yerleişk hangi API tanımları kullanacağını belirler.
+- **allowJs**: JavaScript dosyasının kullanılmasını düzenler. <kbd>false</kbd> olursa TypeScript çalışmasında JavaScript dosyaları, TypeScript dosyalarının import etmesine izin vermez.
+- **skipLibCheck**: Projede kullanılan kütüphane içe aktarıldığında, içe aktarılan kütüphanenin yapısını da inceler.
+- **strict**: Katı tip denetimi yapar.
+- **noEmit**: JavaScript dosyası çıktısı oluşturmasına izin vermez.
+- **esModuleInterop**: CommonJS/AMD/UMD modülleri ES6 modülüne aktarmaya çalışır. <kbd>false</kbd> olması durumunda izin vermeyecektir.
+- **module**: JS dosyalarındaki kullanılacak sözdizimini belirler. <kbd>commonjs (require/module.exports)</kbd> <kbd>"ES2015"(import/export)</kbd>
+- **moduleResolution**: TypeScript'in modül içe aktarımını çözümleyeceğini kontrol eder.
+- **resolveJsonModule**: <kbd>.json</kbd> uzantılı dosyaların TypeScript projesinde içe aktarılmasına izin verir.
+- **isolatedModule**: TypeScript derleyecisine her dosyayı diğer dosyalardan bağımsız olarak tek başına derlenebilirliğini belirtir.
+- **jsx**: <kbd>JSX</kbd> yapısının JavaScript'te yayımlanmasını belirler.
+- **incremental**: Derlemeleri önbelleğe alarak derleme süresini hızlandırır.
+- **plugins**: Eklentilerin bulunduğu liste.
+
+## Paths
+İlgili Projede içe aktarmada 'yolu' belirlemede kullanılır.
+
+## Include
+Projede dahil edileceklerin bulunduğu yapıdır.
+
+## Exclude
+Bu kısımdaki dosyalar TypeScript tarafından gözardı edilir.
+
+# Kaynakça
+- [https://www.typescriptlang.org/docs/handbook/tsconfig-json.html](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+- [https://www.typescriptlang.org/tsconfig](https://www.typescriptlang.org/tsconfig)
+- [https://dev.to/vjygour/understanding-tsconfigjson-the-heart-of-your-typescript-project-1ga1](https://dev.to/vjygour/understanding-tsconfigjson-the-heart-of-your-typescript-project-1ga1)
+- [https://maximilian-schwarzmueller.com/articles/making-sense-of-tsconfig-json/](https://maximilian-schwarzmueller.com/articles/making-sense-of-tsconfig-json/)
+- [https://zubin.dev/blog/boost-typescript-compilation/](https://zubin.dev/blog/boost-typescript-compilation/)
+- [https://stackoverflow.com/questions/55471795/what-is-module-option-in-tsconfig-used-for](https://stackoverflow.com/questions/55471795/what-is-module-option-in-tsconfig-used-for)
+- [https://www.educative.io/answers/module-resolution-techniques-and-strategies-in-typescript](https://www.educative.io/answers/module-resolution-techniques-and-strategies-in-typescript)
+- [https://gili842.medium.com/understanding-tsconfig-json-a-key-to-mastering-typescript-configuration-159a4aaf9b5b](https://gili842.medium.com/understanding-tsconfig-json-a-key-to-mastering-typescript-configuration-159a4aaf9b5b)
+- [https://dev.to/naucode/path-aliases-in-typescript-and-why-you-should-use-them-2odf](https://dev.to/naucode/path-aliases-in-typescript-and-why-you-should-use-them-2odf)
