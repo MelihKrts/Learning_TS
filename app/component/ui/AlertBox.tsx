@@ -26,7 +26,7 @@ export default function AlertBox({ children, type, title }: Props) {
 
     return (
         <div className={`${baseClasses} ${styles[type]}`}>
-            <div className="flex items-start gap-3">
+            <div className="flex items-center gap-3">
                 {icons[type]}
                 <div className="flex-1">
                     {title && (
