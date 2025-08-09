@@ -10,13 +10,14 @@ type Props = {
 export default function AlertBox({ children, type, title }: Props) {
     const baseClasses = "w-full p-4 my-6 rounded-lg border shadow-sm";
     const styles = {
-        info: "bg-blue-50 text-blue-900 border-blue-200",
-        warning: "bg-amber-50 text-amber-900 border-amber-200",
+        info: "bg-blue-50 text-blue-900 border-blue-200 dark:bg-[#1e293b] dark:text-[#bfdbfe] dark:border-[#3b82f6]",
+        warning: "bg-amber-50 text-amber-900 border-amber-200 dark:text-[#ffe58f]  dark:bg-[#3a2f00]",
     };
 
+
     const iconStyles = {
-        info: "text-blue-600",
-        warning: "text-amber-600",
+        info: "text-blue-600 dark:text-[#BFDBFE] ",
+        warning: "text-amber-600 dark:text-[#FFE58F]",
     };
 
     const icons = {

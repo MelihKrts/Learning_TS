@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/app/component/layout/Footer";
 import Header from "@/app/component/layout/Header";
 import type React from "react";
+import {ThemeProvider} from "@/app/component/ThemeProvider";
 
 const delivery = localFont({
     src: [
@@ -27,12 +28,14 @@ export default function RootLayout({children,}: Readonly<{
         <html lang="tr" className={delivery.className}>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
         <link rel="manifest" href="/manifest.json"/>
-        <body>
-        <Header/>
-        <main className="mt-16 min-h-dvh w-full relative">
-            {children}
-        </main>
-        <Footer/>
+        <body className="dark:bg-black">
+        <ThemeProvider>
+            <Header />
+            <main className="mt-16 min-h-dvh w-full relative">
+                {children}
+            </main>
+            <Footer />
+        </ThemeProvider>
         </body>
         </html>
     );

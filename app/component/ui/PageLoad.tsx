@@ -1,18 +1,37 @@
 "use client"
-import React, {useEffect, useState} from "react";
+
+import {useEffect, useState} from "react";
+import {usePathname} from "next/navigation";
 
 export const PageLoadTime = () => {
-    const [loadTime, setLoadTime] = useState<number | null>(null)
+    const [loadTime, setLoadTime] = useState<number | null>(null);
+    const [startTime, setStartTime] = useState<number | null>(null);
+    const pathname = usePathname();
+
+    const measureLoadTime = (start: number) => {
+        const time = (performance.now() - start) / 1000
+        setLoadTime(Number(time.toFixed(2)))
+    }
 
     useEffect(() => {
         const navEntries = performance.getEntriesByType("navigation")
-        if (navEntries.length > 0) {
-            const navTiming = navEntries[0] as PerformanceNavigationTiming
-            const time = navTiming.loadEventEnd - navTiming.startTime
-            setLoadTime(Number((time / 1000).toFixed(2)))
+        const navTiming = navEntries[0] as PerformanceNavigationTiming | undefined
+
+        if (navTiming && pathname === "/") {
+            const time = (navTiming.loadEventEnd - navTiming.startTime) / 1000
+            setLoadTime(Number(time.toFixed(2)))
+        } else {
+            const now = performance.now()
+            setStartTime(now)
+
+            requestAnimationFrame(() => {
+                measureLoadTime(now)
+            })
         }
-    }, [])
+    }, [pathname]);
+
     if (loadTime === null) return null
+
     return (
         <div
             className="fixed bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-3 py-1 rounded shadow-md z-50">

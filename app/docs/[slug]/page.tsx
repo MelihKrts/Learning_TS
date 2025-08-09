@@ -118,7 +118,7 @@ export default async function DocPage({ params }: PageProps) {
         return (
             <div className="w-full">
                 <div className="mb-6 lg:mb-8">
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-900">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
                         {frontmatter?.title || meta.title}
                     </h1>
                     {(frontmatter?.description || meta.description) && (
