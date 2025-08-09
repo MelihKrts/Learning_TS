@@ -2,25 +2,37 @@ import type {MDXComponents} from 'mdx/types'
 import AlertBox from "@/app/component/ui/AlertBox";
 import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
 import {CopyButton} from "@/app/component/ui/CopyButton";
+import FadeInOnView from "@/app/component/ui/FadeInOnView";
+import React from "react";
 
+const withDark = (style:string) => `${style} text-gray-600 dark:text-white`
+
+const headingStyles:Record<string, string> = {
+    h1: withDark("text-3xl font-bold mb-6 mt-8"),
+    h2: withDark("text-2xl font-semibold mb-4 mt-8"),
+    h3: withDark("text-xl font-semibold mb-3 mt-6"),
+    h4: withDark("text-xl font-bold mb-3 py-2"),
+}
+
+const headingComponents = Object.fromEntries(
+    Object.entries(headingStyles).map(([Tag,className]) =>[
+        Tag,
+        (props:any) => (
+            <FadeInOnView>
+                {React.createElement(Tag,{className, ...props})}
+            </FadeInOnView>
+        )
+    ])
+)
 
 export const mdxComponents: MDXComponents = {
     AlertBox,
     ImageWithCaption,
-    h1: (props) => (
-        <h1 className="text-3xl font-bold mb-6 mt-8 text-gray-900 first:mt-0" {...props} />
-    ),
-    h2: (props) => (
-        <h2 className="text-2xl font-semibold mb-4 mt-8 text-gray-900" {...props} />
-    ),
-    h3: (props) => (
-        <h3 className="text-xl font-semibold mb-3 mt-6 text-gray-900" {...props} />
-    ),
-    h4: (props) => (
-        <h4 className="text-xl font-bold mb-3  py-2 text-gray-900" {...props} />
-    ),
+    ...headingComponents,
     p: (props) => (
-        <p className="mb-4 text-gray-700 leading-relaxed" {...props} />
+        <FadeInOnView>
+            <p className="mb-4 text-gray-700 leading-relaxed dark:text-white" {...props} />
+        </FadeInOnView>
     ),
 
     pre: (props) => <div {...props} className="code-block"/>,
@@ -57,7 +69,7 @@ export const mdxComponents: MDXComponents = {
     },
 
     ul: (props) => (
-        <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 ml-2" {...props} />
+        <ul className="list-disc dark:text-white list-inside mb-4 space-y-2 text-gray-700 ml-2" {...props} />
     ),
     ol: (props) => (
         <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-700 ml-2" {...props} />
@@ -70,7 +82,7 @@ export const mdxComponents: MDXComponents = {
     ),
     blockquote: (props) => (
         <blockquote
-            className="border-l-4 border-blue-500 px-4 text-gray-600 mb-4 bg-blue-50 py-2 rounded-tr-md rounded-br-md"
+            className="border-l-4 border-blue-500 px-4 text-gray-600 mb-4 bg-blue-50 py-2 rounded-tr-md rounded-br-md dark:bg-[#1e293b] dark:text-[#bfdbfe]"
             {...props}
         />
     ),
@@ -81,6 +93,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         ...mdxComponents,
         AlertBox,
         ImageWithCaption,
+        ...headingComponents,
         ...components,
+
     }
 }
