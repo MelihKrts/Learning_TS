@@ -1,4 +1,3 @@
-// app/docs/[slug]/page.tsx
 import { getAllDocSlugs, getMdxPageMeta } from "@/lib/getMdxPageMeta";
 import { compileMDX } from "next-mdx-remote/rsc";
 import fs from "fs";
@@ -78,7 +77,10 @@ export default async function DocPage({ params }: PageProps) {
                         [
                             rehypePrettyCode,
                             {
-                                theme: "andromeeda",
+                                theme:{
+                                    light:'rose-pine-dawn',
+                                    dark:'synthwave-84',
+                                },
                                 onVisitLine(node: Element) {
                                     if (node.children.length === 0) {
                                         node.children = [{ type: "text", value: " " }];

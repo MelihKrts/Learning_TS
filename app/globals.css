@@ -87,9 +87,86 @@ code {
 
 figure > div {
     border-radius: 0.5rem;
-    overflow: hidden;
 }
 
 option {
     border-radius: 5px;
+}
+
+/* Light tema için */
+.code-block {
+    background-color: var(--shiki-light-bg);
+    color: var(--shiki-light);
+}
+
+/* Dark tema için */
+.dark .code-block {
+    background-color: var(--shiki-dark-bg);
+    color: var(--shiki-dark);
+}
+
+/* Kod satırları için */
+.code-block span {
+    color: inherit;
+}
+
+/* Light tema - kod renkleri */
+.code-block span[style*="--shiki-light"] {
+    color: var(--shiki-light) !important;
+}
+
+/* Dark tema - kod renkleri */
+.dark .code-block span[style*="--shiki-dark"] {
+    color: var(--shiki-dark) !important;
+}
+
+/* Alternatif yöntem - data-theme attribute'unu kullan */
+[data-theme="light"] .code-block {
+    background-color: var(--shiki-light-bg);
+    color: var(--shiki-light);
+}
+
+[data-theme="dark"] .code-block {
+    background-color: var(--shiki-dark-bg);
+    color: var(--shiki-dark);
+}
+
+/* Shiki'nin varsayılan span stillerini override et */
+[data-theme="light"] .code-block span {
+    color: var(--shiki-light) !important;
+}
+
+[data-theme="dark"] .code-block span {
+    color: var(--shiki-dark) !important;
+}
+
+/* Pre elementleri için de aynı kurallar */
+pre[data-theme] {
+    background-color: var(--shiki-light-bg);
+    color: var(--shiki-light);
+}
+
+.dark pre[data-theme] {
+    background-color: var(--shiki-dark-bg);
+    color: var(--shiki-dark);
+}
+
+/* Highlighted lines */
+.highlighted {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .highlighted {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Highlighted words */
+.highlighted-word {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.dark .highlighted-word {
+    background-color: rgba(255, 255, 255, 0.1);
 }

@@ -5,6 +5,9 @@ import Footer from "@/app/component/layout/Footer";
 import Header from "@/app/component/layout/Header";
 import type React from "react";
 import {ThemeProvider} from "@/app/component/ThemeProvider";
+import dynamic from "next/dynamic";
+
+const CheckConnectionControl = dynamic(()=> import("@/app/component/ui/CheckConnectionControl"));
 
 const delivery = localFont({
     src: [
@@ -31,6 +34,7 @@ export default function RootLayout({children,}: Readonly<{
         <body className="dark:bg-black">
         <ThemeProvider>
             <Header />
+            <CheckConnectionControl/>
             <main className="mt-16 min-h-dvh w-full relative">
                 {children}
             </main>
