@@ -8,7 +8,41 @@
   "name": "Learn TypeScript",
   "short_name": "Learn TS",
   "start_url": "/",
-  "description": "Türkçe TypeScript Dokümantasyon",
+  "description": "TypeScript öğrenmek isteyenler için ücretsiz Türkçe bilgi kaynağı",
+  "shortcuts": [
+    {
+      "name": "Ana Sayfa",
+      "url": "/"
+    },
+    {
+      "name": "Started",
+      "url": "/docs/started"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot/mobile/tslearning.vercel.app_(iPhone 14 Pro Max).png",
+      "description": "Mobilde doküman okuma keyfi",
+      "form-factor": "narrow",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "label": "iPhone 14 Pro max SS"
+    },
+    {
+      "src": "screenshot/desktop/tslearning.vercel.app.png",
+      "sizes": "1351x719",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Masaüstü görünüm"
+    },
+    {
+      "src": "screenshot/desktop/datatype.png",
+      "sizes": "1366x607",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Masaüstü görünüm"
+    }
+  ],
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
