@@ -5,13 +5,11 @@ const pwa = withPWA({
     dest: "public",
     register: true,
     skipWaiting: true,
+    runtimeCaching,
     disable: process.env.NODE_ENV === "development",
-    workboxOptions: {
-        globPatterns: [
-            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
-        ],
-        runtimeCaching,
-    },
+    globPatterns: [
+        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
+    ],
     buildExcludes: [/middleware-manifest.json$/],
 });
 
