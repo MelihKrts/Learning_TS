@@ -6,13 +6,14 @@ const pwa = withPWA({
     register: true,
     skipWaiting: true,
     disable: process.env.NODE_ENV === "development",
-    runtimeCaching,
-    buildExcludes: [/middleware-manifest.json$/],
-    workbox: {
+    extendDefaultRuntimeCaching: true,
+    workboxOptions: {
         globPatterns: [
             "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
         ],
+        runtimeCaching,
     },
+    buildExcludes: [/middleware-manifest.json$/],
 });
 
 /** @type {import('next').NextConfig} */
