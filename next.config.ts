@@ -1,6 +1,5 @@
 import withPWA from "next-pwa";
 import runtimeCaching from "next-pwa/cache";
-import path from "path";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -11,9 +10,7 @@ const pwaConfig = withPWA({
     disable: isDev,
     runtimeCaching,
     buildExcludes: [/middleware-manifest\.json$/],
-    globPatterns: [
-        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2,eot,ttf}"
-    ],
+    // globPatterns ve workboxOptions kaldırıldı
 });
 
 /** @type {import('next').NextConfig} */
