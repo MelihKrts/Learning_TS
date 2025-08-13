@@ -8,9 +8,12 @@ const pwaConfig = withPWA({
     dest: "public",
     register: true,
     skipWaiting: true,
-    disable: isDev,           // development sırasında SW devre dışı
-    runtimeCaching,           // default runtime caching
-    buildExcludes: [/middleware-manifest\.json$/], // SW cache dışında bırak
+    disable: false, // her ortamda SW aktif
+    runtimeCaching, // JS/CSS/resim cache
+    buildExcludes: [/middleware-manifest\.json$/],
+    fallbacks: {
+        document: "/offline.html", // offline HTML fallback
+    },
 });
 
 /** @type {import('next').NextConfig} */
