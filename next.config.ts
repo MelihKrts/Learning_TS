@@ -6,7 +6,6 @@ const pwa = withPWA({
     register: true,
     skipWaiting: true,
     disable: process.env.NODE_ENV === "development",
-    RuntimeCaching: true,
     workboxOptions: {
         globPatterns: [
             "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
