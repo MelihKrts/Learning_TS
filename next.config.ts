@@ -8,7 +8,7 @@ const pwa = withPWA({
     disable: process.env.NODE_ENV === "development",
     runtimeCaching,
     buildExcludes: [/middleware-manifest.json$/],
-    workboxOptions: { // globPatterns must be inside workboxOptions
+    workbox: {
         globPatterns: [
             "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
         ],
