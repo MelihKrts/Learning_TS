@@ -30,6 +30,9 @@ export default function MobileMenu() {
                             </Link>
                         </li>
                         <li>
+                            <Link href="/editor" className="text-white dark:text-gray-300 hover:text-blue-200 dark:hover:text-blue-400 transition-colors">Editör</Link>
+                        </li>
+                        <li>
                             <ThemeSelector/>
                         </li>
                     </ul>

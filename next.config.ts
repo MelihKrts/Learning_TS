@@ -1,11 +1,19 @@
 import withPWA from "next-pwa"
+import runtimeCaching from "next-pwa/cache"
 
 const pwaConfig = withPWA({
     dest:"public",
     register:true,
     skipWaiting:true,
     disable: process.env.NODE_ENV === 'development',
-    buildExcludes: [/app-build-manifest.json$/]
+    buildExcludes: [/app-build-manifest.json$/],
+
+    workboxOptions: {
+        globPattern:[
+            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+        ],
+    },
+    runtimeCaching
 })
 
 /** @type {import('next').NextConfig} */

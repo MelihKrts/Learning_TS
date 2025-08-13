@@ -29,38 +29,59 @@
           "sizes": "96x96"
         }
       ]
+    },
+    {
+      "name": "Editör",
+      "url": "/editor",
+      "icons": [
+        {
+          "src": "shortcut/editor.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
   "screenshots": [
     {
-      "src": "screenshot/mobile/iphone14.png",
-      "description": "Mobilde doküman okuma keyfi",
+      "src": "screenshot/mobile/pixel7.png",
       "form_factor": "narrow",
-      "sizes": "1290x2796",
+      "sizes": "1082x2402",
       "type": "image/png",
-      "label": "iPhone 14 Pro max SS"
+      "label": "Screenshot One"
     },
     {
-      "src": "screenshot/mobile/pixel7.png",
-      "description": "Mobilde doküman okuma keyfi",
-      "form_factor": "narrow",
-      "sizes": "1105x1748",
+      "src": "screenshot/mobile/pixel7_editor.png",
+      "form_factor": "narrow",      "sizes": "1082x2402",
       "type": "image/png",
-      "label": "Pixel 7"
+      "label": "Screenshot Editor"
+    },
+    {
+      "src": "screenshot/mobile/datatypes.png",
+      "form_factor": "narrow",
+      "sizes": "1082x2402",
+      "type": "image/png",
+      "label": "Screenshot Datatypes"
     },
     {
       "src": "screenshot/desktop/tslearning.vercel.app.png",
       "sizes": "1351x719",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Masaüstü görünüm"
+      "label": "Masaüstü Ana sayfa"
     },
     {
       "src": "screenshot/desktop/datatype.png",
       "sizes": "1366x607",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Masaüstü görünüm"
+      "label": "Masaüstü Datatype"
+    },
+    {
+      "src": "screenshot/desktop/editor_desktop.png",
+      "sizes": "2880x1154",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Masaüstü Editör"
     }
   ],
   "icons": [
