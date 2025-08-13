@@ -1,33 +1,27 @@
-import withPWA from "next-pwa"
-import runtimeCaching from "next-pwa/cache"
-
-const pwaConfig = withPWA({
-    dest:"public",
-    register:true,
-    skipWaiting:true,
-    disable: process.env.NODE_ENV === 'development',
-    buildExcludes: [/app-build-manifest.json$/],
-
-    workboxOptions: {
-        globPattern:[
-            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
-        ],
-    },
-    runtimeCaching
-})
+import withPWA from "next-pwa";
+import runtimeCaching from "next-pwa/cache";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+    pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
     compress: true,
     reactStrictMode: true,
     compiler: {
-        removeConsole: process.env.NODE_ENV === 'production',
+        removeConsole: process.env.NODE_ENV === "production",
     },
     turbopack: {
-        resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json'],
-    }
-}
+        resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".json"],
+    },
+};
 
-
-export default pwaConfig(nextConfig)
+export default withPWA({
+    dest: "public",
+    register: true,
+    skipWaiting: true,
+    disable: process.env.NODE_ENV === "development",
+    buildExcludes: [/app-build-manifest.json$/],
+    runtimeCaching,
+    globPatterns: [
+        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+    ]
+})(nextConfig);
