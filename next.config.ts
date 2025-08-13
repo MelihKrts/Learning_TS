@@ -1,17 +1,18 @@
-// next.config.mjs
 import withPWA from "next-pwa";
-import runtimeCaching from "next-pwa/cache"; // Standart caching kuralları
+import runtimeCaching from "next-pwa/cache";
 
 const pwa = withPWA({
     dest: "public",
     register: true,
     skipWaiting: true,
     disable: process.env.NODE_ENV === "development",
-    runtimeCaching, // Hazır offline cache kuralları
+    runtimeCaching,
     buildExcludes: [/middleware-manifest.json$/],
-    globPatterns: [
-        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
-    ],
+    workboxOptions: { // globPatterns must be inside workboxOptions
+        globPatterns: [
+            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx,woff,woff2}"
+        ],
+    },
 });
 
 /** @type {import('next').NextConfig} */
