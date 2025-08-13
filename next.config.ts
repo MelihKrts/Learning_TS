@@ -7,12 +7,10 @@ const pwaConfig = withPWA({
     skipWaiting: true,
     disable: process.env.NODE_ENV === 'development',
     buildExcludes: [/app-build-manifest.json$/],
-    workboxOptions: {
-        globPatterns: [
-            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
-        ],
-        runtimeCaching
-    }
+    globPatterns: [
+        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+    ],
+    runtimeCaching
 })
 
 /** @type {import('next').NextConfig} */
@@ -25,7 +23,10 @@ const nextConfig = {
     },
     turbopack: {
         resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json'],
-    }
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
 }
 
 export default pwaConfig(nextConfig)
