@@ -51,18 +51,19 @@ const pwaConfig = withPWA({
     dest: "public",
     register: true,
     skipWaiting: true,
-    disable: process.env.NODE_ENV === "development", // Dev ortamda kapalı
+    disable: process.env.NODE_ENV === "development",
     buildExcludes: [/app-build-manifest\.json$/],
     runtimeCaching,
-    // Offline fallback (static HTML)
     fallbacks: {
         document: "/offline.html",
     },
-    // GenerateSW ayarları burada
-    globPatterns: [
-        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
-    ],
-    navigateFallback: "/offline.html",
+    // GenerateSW konfigürasyonu burada
+    generateSW: {
+        globPatterns: [
+            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+        ],
+        navigateFallback: "/offline.html",
+    },
 });
 
 export default pwaConfig(nextConfig);
