@@ -28,7 +28,8 @@
     "rehype-pretty-code": "^0.14.1",
     "shiki": "^3.8.1",
     "typescript": "^5.9.2",
-    "workbox-build": "^7.3.0"
+    "workbox-build": "^7.3.0",
+    "workbox-webpack-plugin": "^7.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
