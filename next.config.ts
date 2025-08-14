@@ -6,12 +6,10 @@ const pwaConfig = withPWA({
     skipWaiting: true,
     disable: process.env.NODE_ENV === 'development',
     buildExcludes: [/app-build-manifest.json$/],
-    workbox: {
-        globPatterns: [
-            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
-        ],
-        maximumFileSizeToCacheInBytes: 5000000, // 5MB
-    },
+    globPatterns: [
+        "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+    ],
+    maximumFileSizeToCacheInBytes: 5000000, // 5MB
     runtimeCaching: [
         {
             urlPattern: /^https?.*/,
