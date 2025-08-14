@@ -8,6 +8,11 @@ const pwaConfig = withPWA({
     skipWaiting: true,
     cacheStartUrl: true,
     reloadOnOnline: true,
+    generateSW: ({
+        globPattern:[
+            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+        ],
+    }),
     disable: process.env.NODE_ENV === "development",
     buildExcludes: [/app-build-manifest.json$/],
     fallbacks: {
