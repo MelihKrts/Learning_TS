@@ -1,33 +1,29 @@
-import withPWA from "next-pwa"
-import runtimeCaching from "next-pwa/cache"
+import withPWA from "next-pwa";
+import runtimeCaching from "next-pwa/cache";
 
+/** Next PWA config */
 const pwaConfig = withPWA({
-    dest:"public",
-    register:true,
-    skipWaiting:true,
-    cacheStartUrl:true,
-    globPattern: ["**/*.{js,css,html,svg,png,jpg,jpeg,webp,json}"],
-    reloadOnOnline:true,
-    disable: process.env.NODE_ENV === 'development',
+    dest: "public",
+    register: true,
+    skipWaiting: true,
+    cacheStartUrl: true,
+    reloadOnOnline: true,
+    disable: process.env.NODE_ENV === "development",
     buildExcludes: [/app-build-manifest.json$/],
     fallbacks: {
-        document: "/offline.html",
+        document: "/offline.html", // internet yoksa gösterilecek fallback
     },
-    runtimeCaching
-})
+    runtimeCaching, // JS/CSS/HTML ve asset cache
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
-    compress: true,
     reactStrictMode: true,
+    pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
+    compress: true,
     compiler: {
-        removeConsole: process.env.NODE_ENV === 'production',
+        removeConsole: process.env.NODE_ENV === "production",
     },
-    turbopack: {
-        resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json'],
-    }
-}
+};
 
-
-export default pwaConfig(nextConfig)
+export default pwaConfig(nextConfig);
