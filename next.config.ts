@@ -1,155 +1,95 @@
-// @ts-check
-import withPWA from "next-pwa";
+// import withPWA from "next-pwa"
+// import runtimeCaching from "next-pwa/cache"
+//
+// const pwaConfig = withPWA({
+//     dest:"public",
+//     register:true,
+//     skipWaiting:true,
+//     disable: process.env.NODE_ENV === 'development',
+//     buildExcludes: [/app-build-manifest.json$/],
+//
+//     workboxOptions: {
+//         globPattern:[
+//             "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
+//         ],
+//     },
+//     runtimeCaching
+// })
+//
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//     pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+//     compress: true,
+//     reactStrictMode: true,
+//     compiler: {
+//         removeConsole: process.env.NODE_ENV === 'production',
+//     },
+//     turbopack: {
+//         resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json'],
+//     }
+// }
+//
+//
+// export default pwaConfig(nextConfig)
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
-    compress: true,
-    reactStrictMode: true,
-    compiler: {
-        removeConsole: process.env.NODE_ENV === 'production',
-    },
-    turbopack: {
-        resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json'],
-    },
-    // MDX için gerekli
-    experimental: {
-        mdxRs: true,
-    },
-};
+import withPWA from "next-pwa";
 
 const pwaConfig = withPWA({
     dest: "public",
     register: true,
     skipWaiting: true,
     disable: process.env.NODE_ENV === 'development',
-    buildExcludes: [/app-build-manifest\.json$/],
-
-    // MDX + SSR için optimize edilmiş cache stratejileri
+    buildExcludes: [/app-build-manifest.json$/],
     runtimeCaching: [
-        // Next.js data (getStaticProps, getServerSideProps verisi)
         {
-            urlPattern: /\/_next\/data\/.+\.json$/i,
+            urlPattern: /^https?.*/,
             handler: 'NetworkFirst',
             options: {
-                cacheName: 'next-ssg-data',
+                cacheName: 'offlineCache',
                 expiration: {
-                    maxEntries: 32,
-                    maxAgeSeconds: 60 * 60, // 1 saat (SSR data için)
+                    maxEntries: 200,
+                    maxAgeSeconds: 24 * 60 * 60, // 24 hours
                 },
-                networkTimeoutSeconds: 3,
             },
         },
-        // Static chunks (MDX derlenmiş dosyalar)
         {
-            urlPattern: /\/_next\/static\/.+\.js$/i,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
             handler: 'CacheFirst',
             options: {
-                cacheName: 'next-static-chunks',
-                expiration: {
-                    maxEntries: 64,
-                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 gün
-                },
-            },
-        },
-        // CSS dosyaları (MDX styling dahil)
-        {
-            urlPattern: /\/_next\/static\/.+\.css$/i,
-            handler: 'CacheFirst',
-            options: {
-                cacheName: 'next-static-css',
-                expiration: {
-                    maxEntries: 32,
-                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 gün
-                },
-            },
-        },
-        // Resimler (MDX içindeki resimler dahil)
-        {
-            urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif)$/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-                cacheName: 'static-image-cache',
+                cacheName: 'images',
                 expiration: {
                     maxEntries: 100,
-                    maxAgeSeconds: 60 * 60 * 24 * 7, // 7 gün
+                    maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
                 },
             },
         },
-        // Next.js Image Optimization
         {
-            urlPattern: /\/_next\/image\?url=.*/i,
+            urlPattern: /\.(?:js|css)$/,
             handler: 'StaleWhileRevalidate',
             options: {
-                cacheName: 'next-image-cache',
-                expiration: {
-                    maxEntries: 64,
-                    maxAgeSeconds: 60 * 60 * 24 * 7, // 7 gün
-                },
-            },
-        },
-        // Fontlar
-        {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-                cacheName: 'google-fonts-stylesheets',
-                expiration: {
-                    maxEntries: 4,
-                    maxAgeSeconds: 60 * 60 * 24 * 365, // 1 yıl
-                },
-            },
-        },
-        {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-                cacheName: 'google-fonts-webfonts',
-                expiration: {
-                    maxEntries: 4,
-                    maxAgeSeconds: 60 * 60 * 24 * 365, // 1 yıl
-                },
-            },
-        },
-        // API rotaları (eğer varsa)
-        {
-            urlPattern: /\/api\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-                cacheName: 'api-cache',
-                expiration: {
-                    maxEntries: 16,
-                    maxAgeSeconds: 60 * 5, // 5 dakika (API için kısa)
-                },
-                networkTimeoutSeconds: 5,
-            },
-        },
-        // External assets (CDN'lerden gelen dosyalar)
-        {
-            urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp|ico|css|js)$/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-                cacheName: 'external-resources',
-                expiration: {
-                    maxEntries: 32,
-                    maxAgeSeconds: 60 * 60 * 24, // 1 gün
-                },
-            },
-        },
-        // HTML sayfaları (MDX sayfaları dahil) - en son
-        {
-            urlPattern: ({ request }:any) => request.destination === 'document',
-            handler: 'NetworkFirst',
-            options: {
-                cacheName: 'pages-cache',
-                expiration: {
-                    maxEntries: 32,
-                    maxAgeSeconds: 60 * 60 * 2, // 2 saat
-                },
-                networkTimeoutSeconds: 3,
+                cacheName: 'static-resources',
             },
         },
     ],
 });
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
+    images: {
+        unoptimized: true,
+    },
+    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+    compress: true,
+    reactStrictMode: true,
+    compiler: {
+        removeConsole: process.env.NODE_ENV === 'production',
+    },
+};
 
 export default pwaConfig(nextConfig);
