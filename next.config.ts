@@ -1,24 +1,18 @@
 import withPWA from "next-pwa";
 import runtimeCaching from "next-pwa/cache";
 
-/** Next PWA config */
 const pwaConfig = withPWA({
     dest: "public",
     register: true,
     skipWaiting: true,
     cacheStartUrl: true,
     reloadOnOnline: true,
-    generateSW: ({
-        globPattern:[
-            "**/*.{js,css,html,svg,png,jpg,jpeg,webp,json,mdx}"
-        ],
-    }),
     disable: process.env.NODE_ENV === "development",
     buildExcludes: [/app-build-manifest.json$/],
     fallbacks: {
-        document: "/offline.html", // internet yoksa gösterilecek fallback
+        document: "/offline", // Next.js page fallback
     },
-    runtimeCaching, // JS/CSS/HTML ve asset cache
+    runtimeCaching, // JS/CSS/HTML/asset caching
 });
 
 /** @type {import('next').NextConfig} */
