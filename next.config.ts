@@ -1,3 +1,4 @@
+// @ts-check
 import withPWA from "next-pwa";
 import runtimeCaching from "next-pwa/cache";
 
@@ -24,165 +25,161 @@ const pwaConfig = withPWA({
     skipWaiting: true,
     disable: process.env.NODE_ENV === 'development',
     buildExcludes: [/app-build-manifest\.json$/],
-    runtimeCaching,
-    workboxOptions: {
-        // MDX içerikleri dahil dosya tipleri
-        globPatterns: [
-            "**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,webp,woff,woff2,ttf,eot,mdx,json}"
-        ],
-        // MDX + SSR için optimize edilmiş cache stratejileri
-        runtimeCaching: [
-            // MDX sayfaları ve SSG/SSR içerikleri
-            {
-                urlPattern: /^\/.*$/,
-                handler: 'NetworkFirst',
-                options: {
-                    cacheName: 'pages-cache',
-                    expiration: {
-                        maxEntries: 50,
-                        maxAgeSeconds: 60 * 60 * 2, // 2 saat (SSR için kısa tutuyoruz)
-                    },
-                    networkTimeoutSeconds: 3,
-                    cacheableResponse: {
-                        statuses: [0, 200],
+    // MDX içerikleri dahil dosya tipleri - doğrudan burada
+    globPatterns: [
+        "**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,webp,woff,woff2,ttf,eot,mdx,json}"
+    ],
+    // Service Worker için ek ayarlar - doğrudan burada
+    clientsClaim: true,
+    // MDX runtime errors için - doğrudan burada
+    ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
+    // MDX + SSR için optimize edilmiş cache stratejileri - doğrudan burada
+    runtimeCaching: [
+        // MDX sayfaları ve SSG/SSR içerikleri
+        {
+            urlPattern: /^\/.*$/,
+            handler: 'NetworkFirst',
+            options: {
+                cacheName: 'pages-cache',
+                expiration: {
+                    maxEntries: 50,
+                    maxAgeSeconds: 60 * 60 * 2, // 2 saat (SSR için kısa tutuyoruz)
+                },
+                networkTimeoutSeconds: 3,
+                cacheableResponse: {
+                    statuses: [0, 200],
+                },
+            },
+        },
+        // Next.js data (getStaticProps, getServerSideProps verisi)
+        {
+            urlPattern: /\/_next\/data\/.+\.json$/i,
+            handler: 'NetworkFirst',
+            options: {
+                cacheName: 'next-ssg-data',
+                expiration: {
+                    maxEntries: 32,
+                    maxAgeSeconds: 60 * 60, // 1 saat (SSR data için)
+                },
+                networkTimeoutSeconds: 3,
+            },
+        },
+        // Static chunks (MDX derlenmiş dosyalar)
+        {
+            urlPattern: /\/_next\/static\/.+\.js$/i,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'next-static-chunks',
+                expiration: {
+                    maxEntries: 64,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 gün
+                },
+            },
+        },
+        // CSS dosyaları (MDX styling dahil)
+        {
+            urlPattern: /\/_next\/static\/.+\.css$/i,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'next-static-css',
+                expiration: {
+                    maxEntries: 32,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 gün
+                },
+            },
+        },
+        // Resimler (MDX içindeki resimler dahil)
+        {
+            urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+                cacheName: 'static-image-cache',
+                expiration: {
+                    maxEntries: 100,
+                    maxAgeSeconds: 60 * 60 * 24 * 7, // 7 gün
+                },
+            },
+        },
+        // Next.js Image Optimization
+        {
+            urlPattern: /\/_next\/image\?url=.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+                cacheName: 'next-image-cache',
+                expiration: {
+                    maxEntries: 64,
+                    maxAgeSeconds: 60 * 60 * 24 * 7, // 7 gün
+                },
+            },
+        },
+        // Fontlar
+        {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'google-fonts-stylesheets',
+                expiration: {
+                    maxEntries: 4,
+                    maxAgeSeconds: 60 * 60 * 24 * 365, // 1 yıl
+                },
+            },
+        },
+        {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'google-fonts-webfonts',
+                expiration: {
+                    maxEntries: 4,
+                    maxAgeSeconds: 60 * 60 * 24 * 365, // 1 yıl
+                },
+            },
+        },
+        // API rotaları (eğer varsa)
+        {
+            urlPattern: /\/api\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+                cacheName: 'api-cache',
+                expiration: {
+                    maxEntries: 16,
+                    maxAgeSeconds: 60 * 5, // 5 dakika (API için kısa)
+                },
+                networkTimeoutSeconds: 5,
+            },
+        },
+        // External assets (CDN'lerden gelen dosyalar)
+        {
+            urlPattern: /^https:\/\/cdn\..*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+                cacheName: 'external-cdn-cache',
+                expiration: {
+                    maxEntries: 32,
+                    maxAgeSeconds: 60 * 60 * 24, // 1 gün
+                },
+            },
+        },
+        // Fallback - HTML sayfaları için
+        {
+            urlPattern: /^https?:\/\/[^\/]+\/.*$/,
+            handler: 'NetworkFirst',
+            options: {
+                cacheName: 'document-cache',
+                expiration: {
+                    maxEntries: 32,
+                    maxAgeSeconds: 60 * 60, // 1 saat
+                },
+                networkTimeoutSeconds: 3,
+                cacheableResponse: {
+                    statuses: [0, 200],
+                    headers: {
+                        'content-type': 'text/html',
                     },
                 },
             },
-            // Next.js data (getStaticProps, getServerSideProps verisi)
-            {
-                urlPattern: /\/_next\/data\/.+\.json$/i,
-                handler: 'NetworkFirst',
-                options: {
-                    cacheName: 'next-ssg-data',
-                    expiration: {
-                        maxEntries: 32,
-                        maxAgeSeconds: 60 * 60, // 1 saat (SSR data için)
-                    },
-                    networkTimeoutSeconds: 3,
-                },
-            },
-            // Static chunks (MDX derlenmiş dosyalar)
-            {
-                urlPattern: /\/_next\/static\/.+\.js$/i,
-                handler: 'CacheFirst',
-                options: {
-                    cacheName: 'next-static-chunks',
-                    expiration: {
-                        maxEntries: 64,
-                        maxAgeSeconds: 60 * 60 * 24 * 30, // 30 gün
-                    },
-                },
-            },
-            // CSS dosyaları (MDX styling dahil)
-            {
-                urlPattern: /\/_next\/static\/.+\.css$/i,
-                handler: 'CacheFirst',
-                options: {
-                    cacheName: 'next-static-css',
-                    expiration: {
-                        maxEntries: 32,
-                        maxAgeSeconds: 60 * 60 * 24 * 30, // 30 gün
-                    },
-                },
-            },
-            // Resimler (MDX içindeki resimler dahil)
-            {
-                urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif)$/i,
-                handler: 'StaleWhileRevalidate',
-                options: {
-                    cacheName: 'static-image-cache',
-                    expiration: {
-                        maxEntries: 100,
-                        maxAgeSeconds: 60 * 60 * 24 * 7, // 7 gün
-                    },
-                },
-            },
-            // Next.js Image Optimization
-            {
-                urlPattern: /\/_next\/image\?url=.*/i,
-                handler: 'StaleWhileRevalidate',
-                options: {
-                    cacheName: 'next-image-cache',
-                    expiration: {
-                        maxEntries: 64,
-                        maxAgeSeconds: 60 * 60 * 24 * 7, // 7 gün
-                    },
-                },
-            },
-            // Fontlar
-            {
-                urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-                handler: 'CacheFirst',
-                options: {
-                    cacheName: 'google-fonts-stylesheets',
-                    expiration: {
-                        maxEntries: 4,
-                        maxAgeSeconds: 60 * 60 * 24 * 365, // 1 yıl
-                    },
-                },
-            },
-            {
-                urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-                handler: 'CacheFirst',
-                options: {
-                    cacheName: 'google-fonts-webfonts',
-                    expiration: {
-                        maxEntries: 4,
-                        maxAgeSeconds: 60 * 60 * 24 * 365, // 1 yıl
-                    },
-                },
-            },
-            // API rotaları (eğer varsa)
-            {
-                urlPattern: /\/api\/.*/i,
-                handler: 'NetworkFirst',
-                options: {
-                    cacheName: 'api-cache',
-                    expiration: {
-                        maxEntries: 16,
-                        maxAgeSeconds: 60 * 5, // 5 dakika (API için kısa)
-                    },
-                    networkTimeoutSeconds: 5,
-                },
-            },
-            // External assets (CDN'lerden gelen dosyalar)
-            {
-                urlPattern: /^https:\/\/cdn\..*/i,
-                handler: 'StaleWhileRevalidate',
-                options: {
-                    cacheName: 'external-cdn-cache',
-                    expiration: {
-                        maxEntries: 32,
-                        maxAgeSeconds: 60 * 60 * 24, // 1 gün
-                    },
-                },
-            },
-            // Fallback - HTML sayfaları için
-            {
-                urlPattern: /^https?:\/\/[^\/]+\/.*$/,
-                handler: 'NetworkFirst',
-                options: {
-                    cacheName: 'document-cache',
-                    expiration: {
-                        maxEntries: 32,
-                        maxAgeSeconds: 60 * 60, // 1 saat
-                    },
-                    networkTimeoutSeconds: 3,
-                    cacheableResponse: {
-                        statuses: [0, 200],
-                        headers: {
-                            'content-type': 'text/html',
-                        },
-                    },
-                },
-            },
-        ],
-        // Service Worker için ek ayarlar
-        skipWaiting: true,
-        clientsClaim: true,
-        // MDX runtime errors için
-        ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
-    },
+        },
+    ],
 });
 
 export default pwaConfig(nextConfig);
