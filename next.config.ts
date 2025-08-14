@@ -138,7 +138,7 @@ const pwaConfig = withPWA({
         },
         // HTML sayfaları (MDX sayfaları dahil) - en son
         {
-            urlPattern: ({ request }) => request.destination === 'document',
+            urlPattern: ({ request }:any) => request.destination === 'document',
             handler: 'NetworkFirst',
             options: {
                 cacheName: 'pages-cache',
