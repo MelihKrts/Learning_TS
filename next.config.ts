@@ -1,6 +1,5 @@
 // @ts-check
 import withPWA from "next-pwa";
-import runtimeCaching from "next-pwa/cache";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,32 +24,9 @@ const pwaConfig = withPWA({
     skipWaiting: true,
     disable: process.env.NODE_ENV === 'development',
     buildExcludes: [/app-build-manifest\.json$/],
-    // MDX içerikleri dahil dosya tipleri - doğrudan burada
-    globPatterns: [
-        "**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,webp,woff,woff2,ttf,eot,mdx,json}"
-    ],
-    // Service Worker için ek ayarlar - doğrudan burada
-    clientsClaim: true,
-    // MDX runtime errors için - doğrudan burada
-    ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
-    // MDX + SSR için optimize edilmiş cache stratejileri - doğrudan burada
+
+    // MDX + SSR için optimize edilmiş cache stratejileri
     runtimeCaching: [
-        // MDX sayfaları ve SSG/SSR içerikleri
-        {
-            urlPattern: /^\/.*$/,
-            handler: 'NetworkFirst',
-            options: {
-                cacheName: 'pages-cache',
-                expiration: {
-                    maxEntries: 50,
-                    maxAgeSeconds: 60 * 60 * 2, // 2 saat (SSR için kısa tutuyoruz)
-                },
-                networkTimeoutSeconds: 3,
-                cacheableResponse: {
-                    statuses: [0, 200],
-                },
-            },
-        },
         // Next.js data (getStaticProps, getServerSideProps verisi)
         {
             urlPattern: /\/_next\/data\/.+\.json$/i,
@@ -150,33 +126,27 @@ const pwaConfig = withPWA({
         },
         // External assets (CDN'lerden gelen dosyalar)
         {
-            urlPattern: /^https:\/\/cdn\..*/i,
+            urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp|ico|css|js)$/i,
             handler: 'StaleWhileRevalidate',
             options: {
-                cacheName: 'external-cdn-cache',
+                cacheName: 'external-resources',
                 expiration: {
                     maxEntries: 32,
                     maxAgeSeconds: 60 * 60 * 24, // 1 gün
                 },
             },
         },
-        // Fallback - HTML sayfaları için
+        // HTML sayfaları (MDX sayfaları dahil) - en son
         {
-            urlPattern: /^https?:\/\/[^\/]+\/.*$/,
+            urlPattern: ({ request }) => request.destination === 'document',
             handler: 'NetworkFirst',
             options: {
-                cacheName: 'document-cache',
+                cacheName: 'pages-cache',
                 expiration: {
                     maxEntries: 32,
-                    maxAgeSeconds: 60 * 60, // 1 saat
+                    maxAgeSeconds: 60 * 60 * 2, // 2 saat
                 },
                 networkTimeoutSeconds: 3,
-                cacheableResponse: {
-                    statuses: [0, 200],
-                    headers: {
-                        'content-type': 'text/html',
-                    },
-                },
             },
         },
     ],
