@@ -6,9 +6,13 @@ const pwaConfig = withPWA({
     register:true,
     skipWaiting:true,
     cacheStartUrl:true,
+    globPattern: ["**/*.{js,css,html,svg,png,jpg,jpeg,webp,json}"],
     reloadOnOnline:true,
     disable: process.env.NODE_ENV === 'development',
     buildExcludes: [/app-build-manifest.json$/],
+    fallbacks: {
+        document: "/offline.html",
+    },
     runtimeCaching
 })
 
