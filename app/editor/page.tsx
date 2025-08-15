@@ -7,12 +7,21 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false 
 
 declare global {
     interface Window {
-        monaco: any
+        monaco: {
+            editor: {
+                getModelMarkers: (filter: { resource: unknown }) => MonacoMarker[]
+            }
+            MarkerSeverity: {
+                Error: number
+            }
+        }
     }
 }
 
 interface MonacoEditorInstance {
-    getModel(): any
+    getModel(): {
+        uri: unknown
+    } | null
 }
 
 interface MonacoMarker {
@@ -78,13 +87,13 @@ h1 { color: red; }`)
             const originalError = console.error
             const originalWarn = console.warn
 
-            console.log = (...args: any[]) =>
+            console.log = (...args: unknown[]) =>
                 tempLogs.push({
-                    text: args.map((a: any) => (typeof a === "object" ? JSON.stringify(a, null, 2) : a)).join(" "),
+                    text: args.map((a: unknown) => (typeof a === "object" ? JSON.stringify(a, null, 2) : String(a))).join(" "),
                     color: activeTab === "ts" ? "#facc15" : "#4ade80",
                 })
-            console.error = (...args: any[]) => tempLogs.push({ text: "❌ ERROR: " + args.join(" "), color: "#f87171" })
-            console.warn = (...args: any[]) => tempLogs.push({ text: "⚠️ WARNING: " + args.join(" "), color: "#fbbf24" })
+            console.error = (...args: unknown[]) => tempLogs.push({ text: "❌ ERROR: " + args.join(" "), color: "#f87171" })
+            console.warn = (...args: unknown[]) => tempLogs.push({ text: "⚠️ WARNING: " + args.join(" "), color: "#fbbf24" })
 
             try {
                 let jsToRun = code
@@ -99,8 +108,9 @@ h1 { color: red; }`)
 
                 const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor
                 await new AsyncFunction(`(async () => { ${jsToRun} })()`)()
-            } catch (err: any) {
-                tempLogs.push({ text: "💥 Runtime Hatası: " + err.message, color: "#f87171" })
+            } catch (err: unknown) {
+                const errorMessage = err instanceof Error ? err.message : String(err)
+                tempLogs.push({ text: "💥 Runtime Hatası: " + errorMessage, color: "#f87171" })
             } finally {
                 console.log = originalLog
                 console.error = originalError
@@ -110,7 +120,6 @@ h1 { color: red; }`)
             setLogs(tempLogs)
         }
 
-        // HTML+CSS iframe render
         if (iframeRef.current) {
             const doc = iframeRef.current.contentDocument
             if (!doc) return
@@ -125,20 +134,18 @@ h1 { color: red; }`)
 
     return (
         <div className="flex flex-col h-screen">
-            {/* Sekmeler */}
             <div className="flex border-b border-gray-700">
-                {["ts", "js", "html", "css"].map((tab) => (
+                {(["ts", "js", "html", "css"] as const).map((tab) => (
                     <button
                         key={tab}
                         className={`px-4 py-2 font-medium ${activeTab === tab ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-400"}`}
-                        onClick={() => setActiveTab(tab as any)}
+                        onClick={() => setActiveTab(tab)}
                     >
                         {tab.toUpperCase()}
                     </button>
                 ))}
             </div>
 
-            {/* Editor */}
             <div className="flex-1">
                 {activeTab === "ts" && (
                     <MonacoEditor
@@ -183,7 +190,6 @@ h1 { color: red; }`)
                 )}
             </div>
 
-            {/* Run / Output panel */}
             {activeTab !== "css" && (
                 <div className="p-2 bg-gray-900 text-white h-64 overflow-auto font-mono text-sm border-t border-gray-700 flex flex-col">
                     <div className="flex gap-2 mb-2">
