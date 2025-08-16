@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as ts from "typescript"
 import dynamic from "next/dynamic"
+import type { editor, languages } from "monaco-editor"
 
 // Monaco Editor lazy load
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -11,56 +12,16 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
     ),
 })
 
-// Global Monaco tiplemesi
 declare global {
     interface Window {
-        monaco?: {
-            editor: {
-                getModelMarkers: (filter: { resource: unknown }) => MonacoMarker[]
-            }
-            MarkerSeverity: {
-                Error: number
-                Warning: number
-                Info: number
-                Hint: number
-            }
-            languages: {
-                html: {
-                    htmlDefaults: {
-                        setOptions: (options: {
-                            format?: HTMLFormatConfiguration
-                            suggest?: HTMLSuggestConfiguration
-                        }) => void
-                    }
-                }
-                registerCompletionItemProvider: (
-                    languageId: string,
-                    provider: {
-                        provideCompletionItems: () => { suggestions: CompletionItem[] }
-                    },
-                ) => void
-                CompletionItemKind: {
-                    Snippet: number
-                }
-                CompletionItemInsertTextRule: {
-                    InsertAsSnippet: number
-                }
-            }
-        }
+        monaco?: typeof import("monaco-editor")
     }
 }
 
-// Tipler
 interface MonacoEditorInstance {
-    getModel(): { uri: unknown } | null
+    getModel(): editor.ITextModel | null
     getValue(): string
     setValue(value: string): void
-}
-
-interface MonacoMarker {
-    severity: number
-    startLineNumber: number
-    message: string
 }
 
 interface LogEntry {
@@ -70,59 +31,7 @@ interface LogEntry {
     timestamp: number
 }
 
-interface CompletionItem {
-    label: string
-    kind: number
-    insertText: string
-    insertTextRules: number
-    documentation: string
-}
-
-interface MonacoInstance {
-    languages: {
-        html: {
-            htmlDefaults: {
-                setOptions: (options: {
-                    format?: HTMLFormatConfiguration
-                    suggest?: HTMLSuggestConfiguration
-                }) => void
-            }
-        }
-        registerCompletionItemProvider: (
-            languageId: string,
-            provider: {
-                provideCompletionItems: () => { suggestions: CompletionItem[] }
-            },
-        ) => void
-        CompletionItemKind: {
-            Snippet: number
-        }
-        CompletionItemInsertTextRule: {
-            InsertAsSnippet: number
-        }
-    }
-}
-
-interface HTMLFormatConfiguration {
-    tabSize?: number
-    insertSpaces?: boolean
-    wrapLineLength?: number
-    unformatted?: string
-    contentUnformatted?: string
-    indentInnerHtml?: boolean
-    preserveNewLines?: boolean
-    maxPreserveNewLines?: number | undefined
-    indentHandlebars?: boolean
-    endWithNewline?: boolean
-    extraLiners?: string
-    wrapAttributes?: string
-}
-
-interface HTMLSuggestConfiguration {
-    html5?: boolean
-    angular1?: boolean
-    ionic?: boolean
-}
+type CompletionItem = languages.CompletionItem
 
 type TabType = "ts" | "js" | "html" | "css"
 type Theme = "vs-dark" | "vs-light"
@@ -342,8 +251,8 @@ export default function EditorPage() {
             const errorSeverity = window.monaco.MarkerSeverity?.Error
             if (!errorSeverity) return []
             return markers
-                .filter((m: MonacoMarker) => m.severity === errorSeverity)
-                .map((e: MonacoMarker) => `🚫 Satır ${e.startLineNumber}: ${e.message}`)
+                .filter((m) => m.severity === errorSeverity)
+                .map((e) => `🚫 Satır ${e.startLineNumber}: ${e.message}`)
         } catch {
             return []
         }
@@ -490,11 +399,11 @@ export default function EditorPage() {
     return (
         <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
             {/* Header */}
-            <div className="flex-shrink-0 flex border-b border-gray-700 bg-gray-800 overflow-x-auto">
+            <div className="flex-shrink-0 flex border-b border-gray-700 bg-gray-800 overflow-x-auto scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600">
                 {TABS.map((tab) => (
                     <button
                         key={tab}
-                        className={`flex-shrink-0 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 font-medium transition-all duration-200 border-b-2 text-xs sm:text-sm lg:text-base ${activeTab === tab ? "bg-gray-700 text-white border-blue-500" : "text-gray-400 hover:bg-gray-700 hover:text-white border-transparent"}`}
+                        className={`flex-shrink-0 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 font-medium transition-all duration-200 border-b-2 text-xs sm:text-sm lg:text-base whitespace-nowrap ${activeTab === tab ? "bg-gray-700 text-white border-blue-500" : "text-gray-400 hover:bg-gray-700 hover:text-white border-transparent"}`}
                         onClick={() => setActiveTab(tab)}
                     >
                         {TAB_LABELS[tab]}
@@ -513,12 +422,11 @@ export default function EditorPage() {
                             value={currentCode}
                             theme={theme}
                             onChange={(value) => updateCode(activeTab, value || "")}
-                            onMount={(editor: MonacoEditorInstance, monaco: MonacoInstance) => {
+                            onMount={(editor, monaco) => {
                                 editorRef.current = editor
 
                                 // HTML için auto-closing tags ve Emmet benzeri snippet'ler
                                 if (activeTab === "html") {
-                                    // HTML için auto-closing tags
                                     monaco.languages.html.htmlDefaults.setOptions({
                                         format: {
                                             tabSize: 2,
@@ -529,7 +437,7 @@ export default function EditorPage() {
                                             contentUnformatted: "pre",
                                             indentInnerHtml: false,
                                             preserveNewLines: true,
-                                            maxPreserveNewLines: undefined,
+                                            maxPreserveNewLines: 2,
                                             indentHandlebars: false,
                                             endWithNewline: false,
                                             extraLiners: "head, body, /html",
@@ -545,7 +453,7 @@ export default function EditorPage() {
                                     // Emmet benzeri snippet'ler
                                     monaco.languages.registerCompletionItemProvider("html", {
                                         provideCompletionItems: () => {
-                                            const suggestions = [
+                                            const suggestions: languages.CompletionItem[] = [
                                                 {
                                                     label: "!",
                                                     kind: monaco.languages.CompletionItemKind.Snippet,
@@ -564,6 +472,7 @@ export default function EditorPage() {
                                                     ].join("\n"),
                                                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                                     documentation: "HTML5 boilerplate",
+                                                    range: {} as any,
                                                 },
                                                 {
                                                     label: "ul>li*3",
@@ -577,6 +486,7 @@ export default function EditorPage() {
                                                     ].join("\n"),
                                                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                                     documentation: "Unordered list with 3 items",
+                                                    range: {} as any,
                                                 },
                                             ]
 
@@ -589,13 +499,14 @@ export default function EditorPage() {
                                 if (activeTab === "css") {
                                     monaco.languages.registerCompletionItemProvider("css", {
                                         provideCompletionItems: () => {
-                                            const suggestions = [
+                                            const suggestions: languages.CompletionItem[] = [
                                                 {
                                                     label: "flex-center",
                                                     kind: monaco.languages.CompletionItemKind.Snippet,
                                                     insertText: ["display: flex;", "justify-content: center;", "align-items: center;"].join("\n"),
                                                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                                     documentation: "Flexbox centering",
+                                                    range: {} as any,
                                                 },
                                             ]
 
@@ -609,17 +520,20 @@ export default function EditorPage() {
                                 scrollbar: {
                                     vertical: "visible" as const,
                                     horizontal: "visible" as const,
-                                    verticalScrollbarSize: window.innerWidth < 768 ? 8 : 12,
-                                    horizontalScrollbarSize: window.innerWidth < 768 ? 8 : 12,
-                                    arrowSize: 11,
-                                    useShadows: false,
-                                    verticalHasArrows: true,
-                                    horizontalHasArrows: true,
+                                    verticalScrollbarSize: window.innerWidth < 768 ? 6 : 10,
+                                    horizontalScrollbarSize: window.innerWidth < 768 ? 6 : 10,
+                                    arrowSize: window.innerWidth < 768 ? 8 : 11,
+                                    useShadows: true,
+                                    verticalHasArrows: false,
+                                    horizontalHasArrows: false,
                                     alwaysConsumeMouseWheel: false,
+                                    handleMouseWheel: true,
                                 },
                                 fontSize: window.innerWidth < 640 ? 12 : window.innerWidth < 1024 ? 13 : 14,
                                 lineHeight: window.innerWidth < 640 ? 18 : window.innerWidth < 1024 ? 20 : 22,
                                 minimap: { enabled: window.innerWidth >= 1024 },
+                                mouseWheelScrollSensitivity: window.innerWidth < 768 ? 0.5 : 1,
+                                fastScrollSensitivity: window.innerWidth < 768 ? 2 : 5,
                             }}
                         />
                     </div>
@@ -629,12 +543,12 @@ export default function EditorPage() {
                 {showOutput && (
                     <div className="flex-1 lg:w-1/2 flex flex-col bg-gray-900 min-h-0 overflow-hidden">
                         {/* Output Header */}
-                        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2 lg:gap-3 p-2 sm:p-3 bg-gray-800 border-b border-gray-700">
+                        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2 lg:gap-3 p-2 sm:p-3 bg-gray-800 border-b border-gray-700 overflow-x-auto">
                             {showRunButton && (
                                 <button
                                     onClick={runCode}
                                     disabled={isRunning}
-                                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded font-medium transition-all text-xs sm:text-sm ${
+                                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                                         isRunning ? "bg-gray-600 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 active:scale-95"
                                     }`}
                                 >
@@ -661,10 +575,7 @@ export default function EditorPage() {
                         {/* Output Content */}
                         <div className="flex-1 min-h-0 bg-gray-900 overflow-hidden">
                             {activeTab === "ts" || activeTab === "js" ? (
-                                <div
-                                    className="h-full overflow-y-auto overflow-x-hidden p-2 sm:p-3 font-mono text-xs sm:text-sm"
-                                    style={{ scrollbarWidth: "thin" }}
-                                >
+                                <div className="h-full overflow-y-auto overflow-x-hidden p-2 sm:p-3 font-mono text-xs sm:text-sm scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-500">
                                     {logs.length === 0 ? (
                                         <div className="text-gray-500 italic text-center py-8">
                                             Kodu çalıştırmak için ▶ Çalıştır butonuna basın veya Ctrl+Enter kullanın
