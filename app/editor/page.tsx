@@ -31,8 +31,6 @@ interface LogEntry {
     timestamp: number
 }
 
-type CompletionItem = languages.CompletionItem
-
 type TabType = "ts" | "js" | "html" | "css"
 type Theme = "vs-dark" | "vs-light"
 
@@ -452,7 +450,14 @@ export default function EditorPage() {
 
                                     // Emmet benzeri snippet'ler
                                     monaco.languages.registerCompletionItemProvider("html", {
-                                        provideCompletionItems: () => {
+                                        provideCompletionItems: (model, position) => {
+                                            const range = {
+                                                startLineNumber: position.lineNumber,
+                                                endLineNumber: position.lineNumber,
+                                                startColumn: position.column,
+                                                endColumn: position.column,
+                                            }
+
                                             const suggestions: languages.CompletionItem[] = [
                                                 {
                                                     label: "!",
@@ -472,7 +477,7 @@ export default function EditorPage() {
                                                     ].join("\n"),
                                                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                                     documentation: "HTML5 boilerplate",
-                                                    range: {} as any,
+                                                    range,
                                                 },
                                                 {
                                                     label: "ul>li*3",
@@ -486,7 +491,7 @@ export default function EditorPage() {
                                                     ].join("\n"),
                                                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                                     documentation: "Unordered list with 3 items",
-                                                    range: {} as any,
+                                                    range,
                                                 },
                                             ]
 
@@ -498,7 +503,14 @@ export default function EditorPage() {
                                 // CSS için snippet'ler
                                 if (activeTab === "css") {
                                     monaco.languages.registerCompletionItemProvider("css", {
-                                        provideCompletionItems: () => {
+                                        provideCompletionItems: (model, position) => {
+                                            const range = {
+                                                startLineNumber: position.lineNumber,
+                                                endLineNumber: position.lineNumber,
+                                                startColumn: position.column,
+                                                endColumn: position.column,
+                                            }
+
                                             const suggestions: languages.CompletionItem[] = [
                                                 {
                                                     label: "flex-center",
@@ -506,7 +518,7 @@ export default function EditorPage() {
                                                     insertText: ["display: flex;", "justify-content: center;", "align-items: center;"].join("\n"),
                                                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                                     documentation: "Flexbox centering",
-                                                    range: {} as any,
+                                                    range,
                                                 },
                                             ]
 
