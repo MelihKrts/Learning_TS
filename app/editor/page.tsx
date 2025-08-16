@@ -24,7 +24,28 @@ declare global {
                 Info: number
                 Hint: number
             }
-            languages: any
+            languages: {
+                html: {
+                    htmlDefaults: {
+                        setOptions: (options: {
+                            format: Record<string, unknown>
+                            suggest: Record<string, boolean>
+                        }) => void
+                    }
+                }
+                registerCompletionItemProvider: (
+                    languageId: string,
+                    provider: {
+                        provideCompletionItems: () => { suggestions: CompletionItem[] }
+                    },
+                ) => void
+                CompletionItemKind: {
+                    Snippet: number
+                }
+                CompletionItemInsertTextRule: {
+                    InsertAsSnippet: number
+                }
+            }
         }
     }
 }
@@ -47,6 +68,39 @@ interface LogEntry {
     text: string
     color: string
     timestamp: number
+}
+
+interface CompletionItem {
+    label: string
+    kind: number
+    insertText: string
+    insertTextRules: number
+    documentation: string
+}
+
+interface MonacoInstance {
+    languages: {
+        html: {
+            htmlDefaults: {
+                setOptions: (options: {
+                    format: Record<string, unknown>
+                    suggest: Record<string, boolean>
+                }) => void
+            }
+        }
+        registerCompletionItemProvider: (
+            languageId: string,
+            provider: {
+                provideCompletionItems: () => { suggestions: CompletionItem[] }
+            },
+        ) => void
+        CompletionItemKind: {
+            Snippet: number
+        }
+        CompletionItemInsertTextRule: {
+            InsertAsSnippet: number
+        }
+    }
 }
 
 type TabType = "ts" | "js" | "html" | "css"
@@ -438,7 +492,7 @@ export default function EditorPage() {
                             value={currentCode}
                             theme={theme}
                             onChange={(value) => updateCode(activeTab, value || "")}
-                            onMount={(editor: MonacoEditorInstance, monaco: any) => {
+                            onMount={(editor: MonacoEditorInstance, monaco: MonacoInstance) => {
                                 editorRef.current = editor
 
                                 // HTML için auto-closing tags ve Emmet benzeri snippet'ler
@@ -469,7 +523,7 @@ export default function EditorPage() {
 
                                     // Emmet benzeri snippet'ler
                                     monaco.languages.registerCompletionItemProvider("html", {
-                                        provideCompletionItems: (model: any, position: any) => {
+                                        provideCompletionItems: () => {
                                             const suggestions = [
                                                 {
                                                     label: "!",
