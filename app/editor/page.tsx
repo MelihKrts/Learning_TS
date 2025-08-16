@@ -28,8 +28,8 @@ declare global {
                 html: {
                     htmlDefaults: {
                         setOptions: (options: {
-                            format: Record<string, unknown>
-                            suggest: Record<string, boolean>
+                            format?: HTMLFormatConfiguration
+                            suggest?: HTMLSuggestConfiguration
                         }) => void
                     }
                 }
@@ -83,8 +83,8 @@ interface MonacoInstance {
         html: {
             htmlDefaults: {
                 setOptions: (options: {
-                    format: Record<string, unknown>
-                    suggest: Record<string, boolean>
+                    format?: HTMLFormatConfiguration
+                    suggest?: HTMLSuggestConfiguration
                 }) => void
             }
         }
@@ -101,6 +101,27 @@ interface MonacoInstance {
             InsertAsSnippet: number
         }
     }
+}
+
+interface HTMLFormatConfiguration {
+    tabSize?: number
+    insertSpaces?: boolean
+    wrapLineLength?: number
+    unformatted?: string
+    contentUnformatted?: string
+    indentInnerHtml?: boolean
+    preserveNewLines?: boolean
+    maxPreserveNewLines?: number | undefined
+    indentHandlebars?: boolean
+    endWithNewline?: boolean
+    extraLiners?: string
+    wrapAttributes?: string
+}
+
+interface HTMLSuggestConfiguration {
+    html5?: boolean
+    angular1?: boolean
+    ionic?: boolean
 }
 
 type TabType = "ts" | "js" | "html" | "css"
@@ -473,7 +494,7 @@ export default function EditorPage() {
                 {TABS.map((tab) => (
                     <button
                         key={tab}
-                        className={`flex-shrink-0 px-4 sm:px-6 py-3 font-medium transition-all duration-200 border-b-2 text-sm sm:text-base ${activeTab === tab ? "bg-gray-700 text-white border-blue-500" : "text-gray-400 hover:bg-gray-700 hover:text-white border-transparent"}`}
+                        className={`flex-shrink-0 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 font-medium transition-all duration-200 border-b-2 text-xs sm:text-sm lg:text-base ${activeTab === tab ? "bg-gray-700 text-white border-blue-500" : "text-gray-400 hover:bg-gray-700 hover:text-white border-transparent"}`}
                         onClick={() => setActiveTab(tab)}
                     >
                         {TAB_LABELS[tab]}
@@ -482,10 +503,10 @@ export default function EditorPage() {
             </div>
 
             {/* Editor + Output */}
-            <div className="flex-1 flex flex-col lg:flex-row min-h-0">
+            <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden">
                 {/* Editor */}
-                <div className="flex-1 lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-gray-700 min-h-0">
-                    <div className="flex-1 min-h-0">
+                <div className="flex-1 lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-gray-700 min-h-0 overflow-hidden">
+                    <div className="flex-1 min-h-0 overflow-hidden">
                         <MonacoEditor
                             height="100%"
                             language={editorLanguage}
@@ -588,16 +609,16 @@ export default function EditorPage() {
                                 scrollbar: {
                                     vertical: "visible" as const,
                                     horizontal: "visible" as const,
-                                    verticalScrollbarSize: 12,
-                                    horizontalScrollbarSize: 12,
+                                    verticalScrollbarSize: window.innerWidth < 768 ? 8 : 12,
+                                    horizontalScrollbarSize: window.innerWidth < 768 ? 8 : 12,
                                     arrowSize: 11,
                                     useShadows: false,
                                     verticalHasArrows: true,
                                     horizontalHasArrows: true,
                                     alwaysConsumeMouseWheel: false,
                                 },
-                                fontSize: window.innerWidth < 640 ? 12 : 14,
-                                lineHeight: window.innerWidth < 640 ? 18 : 22,
+                                fontSize: window.innerWidth < 640 ? 12 : window.innerWidth < 1024 ? 13 : 14,
+                                lineHeight: window.innerWidth < 640 ? 18 : window.innerWidth < 1024 ? 20 : 22,
                                 minimap: { enabled: window.innerWidth >= 1024 },
                             }}
                         />
@@ -606,14 +627,14 @@ export default function EditorPage() {
 
                 {/* Output */}
                 {showOutput && (
-                    <div className="flex-1 lg:w-1/2 flex flex-col bg-gray-900 min-h-0">
+                    <div className="flex-1 lg:w-1/2 flex flex-col bg-gray-900 min-h-0 overflow-hidden">
                         {/* Output Header */}
-                        <div className="flex-shrink-0 flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-800 border-b border-gray-700">
+                        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2 lg:gap-3 p-2 sm:p-3 bg-gray-800 border-b border-gray-700">
                             {showRunButton && (
                                 <button
                                     onClick={runCode}
                                     disabled={isRunning}
-                                    className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded font-medium transition-all text-sm ${
+                                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded font-medium transition-all text-xs sm:text-sm ${
                                         isRunning ? "bg-gray-600 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 active:scale-95"
                                     }`}
                                 >
@@ -625,12 +646,12 @@ export default function EditorPage() {
                             </div>
                             <div className="hidden sm:flex ml-auto text-xs text-gray-500 items-center gap-2">
                                 {(activeTab === "ts" || activeTab === "js") && `${logs.length} mesaj`}
-                                <span className="text-gray-600">Ctrl+Enter ile çalıştır</span>
+                                <span className="text-gray-600 hidden lg:inline">Ctrl+Enter ile çalıştır</span>
                             </div>
                             {logs.length > 0 && (
                                 <button
                                     onClick={() => setLogs([])}
-                                    className="text-gray-400 hover:text-white text-xs sm:text-sm px-2 py-1 rounded hover:bg-gray-700 flex-shrink-0"
+                                    className="text-gray-400 hover:text-white text-xs sm:text-sm px-1.5 sm:px-2 py-1 rounded hover:bg-gray-700 flex-shrink-0"
                                 >
                                     Temizle
                                 </button>
@@ -638,18 +659,21 @@ export default function EditorPage() {
                         </div>
 
                         {/* Output Content */}
-                        <div className="flex-1 min-h-0 bg-gray-900">
+                        <div className="flex-1 min-h-0 bg-gray-900 overflow-hidden">
                             {activeTab === "ts" || activeTab === "js" ? (
-                                <div className="h-full overflow-y-auto p-3 font-mono text-xs sm:text-sm">
+                                <div
+                                    className="h-full overflow-y-auto overflow-x-hidden p-2 sm:p-3 font-mono text-xs sm:text-sm"
+                                    style={{ scrollbarWidth: "thin" }}
+                                >
                                     {logs.length === 0 ? (
-                                        <div className="text-gray-500 italic">
+                                        <div className="text-gray-500 italic text-center py-8">
                                             Kodu çalıştırmak için ▶ Çalıştır butonuna basın veya Ctrl+Enter kullanın
                                         </div>
                                     ) : (
                                         <div className="space-y-1">
                                             {logs.map((log) => (
                                                 <div key={log.id} style={{ color: log.color }}>
-                                                    <pre className="whitespace-pre-wrap break-words font-mono">{log.text}</pre>
+                                                    <pre className="whitespace-pre-wrap break-words font-mono leading-relaxed">{log.text}</pre>
                                                 </div>
                                             ))}
                                         </div>
