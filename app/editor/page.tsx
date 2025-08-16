@@ -197,10 +197,61 @@ export default function EditorPage() {
     const [codes, setCodes] = useState<Record<TabType, string>>(DEFAULT_CODES)
     const [logs, setLogs] = useState<LogEntry[]>([])
     const [isRunning, setIsRunning] = useState(false)
+    const [isMounted, setIsMounted] = useState(false)
 
     const iframeRef = useRef<HTMLIFrameElement>(null)
     const editorRef = useRef<MonacoEditorInstance>(null)
     const logIdCounter = useRef(0)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    const getResponsiveEditorOptions = useCallback(() => {
+        if (!isMounted || typeof window === "undefined") {
+            return {
+                ...EDITOR_OPTIONS,
+                scrollbar: {
+                    vertical: "visible" as const,
+                    horizontal: "visible" as const,
+                    verticalScrollbarSize: 10,
+                    horizontalScrollbarSize: 10,
+                    arrowSize: 11,
+                    useShadows: true,
+                    verticalHasArrows: false,
+                    horizontalHasArrows: false,
+                    alwaysConsumeMouseWheel: false,
+                    handleMouseWheel: true,
+                },
+                fontSize: 14,
+                lineHeight: 22,
+                minimap: { enabled: false },
+                mouseWheelScrollSensitivity: 1,
+                fastScrollSensitivity: 5,
+            }
+        }
+
+        return {
+            ...EDITOR_OPTIONS,
+            scrollbar: {
+                vertical: "visible" as const,
+                horizontal: "visible" as const,
+                verticalScrollbarSize: window.innerWidth < 768 ? 6 : 10,
+                horizontalScrollbarSize: window.innerWidth < 768 ? 6 : 10,
+                arrowSize: window.innerWidth < 768 ? 8 : 11,
+                useShadows: true,
+                verticalHasArrows: false,
+                horizontalHasArrows: false,
+                alwaysConsumeMouseWheel: false,
+                handleMouseWheel: true,
+            },
+            fontSize: window.innerWidth < 640 ? 12 : window.innerWidth < 1024 ? 13 : 14,
+            lineHeight: window.innerWidth < 640 ? 18 : window.innerWidth < 1024 ? 20 : 22,
+            minimap: { enabled: window.innerWidth >= 1024 },
+            mouseWheelScrollSensitivity: window.innerWidth < 768 ? 0.5 : 1,
+            fastScrollSensitivity: window.innerWidth < 768 ? 2 : 5,
+        }
+    }, [isMounted])
 
     // Tema güncelleme
     useEffect(() => {
@@ -527,26 +578,7 @@ export default function EditorPage() {
                                     })
                                 }
                             }}
-                            options={{
-                                ...EDITOR_OPTIONS,
-                                scrollbar: {
-                                    vertical: "visible" as const,
-                                    horizontal: "visible" as const,
-                                    verticalScrollbarSize: window.innerWidth < 768 ? 6 : 10,
-                                    horizontalScrollbarSize: window.innerWidth < 768 ? 6 : 10,
-                                    arrowSize: window.innerWidth < 768 ? 8 : 11,
-                                    useShadows: true,
-                                    verticalHasArrows: false,
-                                    horizontalHasArrows: false,
-                                    alwaysConsumeMouseWheel: false,
-                                    handleMouseWheel: true,
-                                },
-                                fontSize: window.innerWidth < 640 ? 12 : window.innerWidth < 1024 ? 13 : 14,
-                                lineHeight: window.innerWidth < 640 ? 18 : window.innerWidth < 1024 ? 20 : 22,
-                                minimap: { enabled: window.innerWidth >= 1024 },
-                                mouseWheelScrollSensitivity: window.innerWidth < 768 ? 0.5 : 1,
-                                fastScrollSensitivity: window.innerWidth < 768 ? 2 : 5,
-                            }}
+                            options={getResponsiveEditorOptions()}
                         />
                     </div>
                 </div>
