@@ -1,7 +1,7 @@
 import { getAllDocSlugs, getMdxPageMeta } from "@/lib/getMdxPageMeta"
 import { notFound } from "next/navigation"
 import { getMdxContent } from "@/hooks/docs/get-mdx-content"
-import { useDocNavigation } from "@/hooks/docs/get-doc-navigation"
+import { getDocNavigation } from "@/hooks/docs/get-doc-navigation"
 import DocPageNavigation from "@/app/component/ui/DocsSideBar/DocPageNavigation";
 import DocPageHeader from "@/app/component/ui/DocsSideBar/DocPageHeader";
 
@@ -39,7 +39,7 @@ export default async function DocPage({ params }: PageProps) {
 
     const { content, frontmatter } = mdxResult
     const meta = getMdxPageMeta(slug)
-    const navigation = useDocNavigation(slug, frontmatter)
+    const navigation = getDocNavigation(slug, frontmatter)
 
     const title = frontmatter?.title || meta.title
     const description = frontmatter?.description || meta.description
