@@ -16,7 +16,7 @@ function getNavigationTitle(slug: string): string {
     }
 }
 
-export function useDocNavigation(slug: string, frontmatter: Frontmatter) {
+export function getDocNavigation(slug: string, frontmatter: Frontmatter) {
     const meta = getMdxPageMeta(slug)
 
     const prevSlug = frontmatter?.prev || meta.prev

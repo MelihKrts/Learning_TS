@@ -16,7 +16,7 @@ interface Frontmatter {
     lastUpdated?: string
 }
 
-export async function useMdxContent(slug: string) {
+export async function getMdxContent(slug: string) {
     const filePath = path.join(process.cwd(), "content", `${slug}.mdx`)
 
     if (!fs.existsSync(filePath)) {

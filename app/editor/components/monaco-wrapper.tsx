@@ -4,11 +4,14 @@ import { useCallback } from "react"
 import dynamic from "next/dynamic"
 import type { TabType, MonacoEditorInstance } from "@/lib/editor/types"
 import { getResponsiveEditorOptions } from "@/lib/editor/config"
+import type * as monaco from "monaco-editor" // 🔑 tip importu
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
     ssr: false,
     loading: () => (
-        <div className="flex items-center justify-center h-full text-gray-400">Monaco Editor yükleniyor...</div>
+        <div className="flex items-center justify-center h-full text-gray-400">
+            Monaco Editor yükleniyor...
+        </div>
     ),
 })
 
@@ -45,16 +48,16 @@ export function MonacoWrapper({
     }, [activeTab])
 
     const handleEditorMount = useCallback(
-        (editor: any, monaco: any) => {
+        (editor: MonacoEditorInstance, monacoInstance: typeof monaco) => {
             onEditorMount(editor)
 
             if (activeTab === "html") {
-                monaco.languages.registerCompletionItemProvider("html", {
-                    provideCompletionItems: (model: any, position: any) => ({
+                monacoInstance.languages.registerCompletionItemProvider("html", {
+                    provideCompletionItems: (model, position) => ({
                         suggestions: [
                             {
                                 label: "!",
-                                kind: monaco.languages.CompletionItemKind.Snippet,
+                                kind: monacoInstance.languages.CompletionItemKind.Snippet,
                                 insertText: [
                                     "<!DOCTYPE html>",
                                     '<html lang="tr">',
@@ -68,7 +71,8 @@ export function MonacoWrapper({
                                     "</body>",
                                     "</html>",
                                 ].join("\n"),
-                                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                                insertTextRules:
+                                monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                                 documentation: "HTML5 boilerplate",
                                 range: {
                                     startLineNumber: position.lineNumber,
