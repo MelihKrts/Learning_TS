@@ -1,7 +1,7 @@
 import type {MDXComponents} from 'mdx/types'
-import AlertBox from "@/app/component/ui/AlertBox";
+import AlertBox from "@/app/component/ui/Alertbox/AlertBox";
 import ImageWithCaption from "@/app/component/ui/ImageWithCaption";
-import {CopyButton} from "@/app/component/ui/CopyButton";
+import {CopyButton} from "@/app/component/ui/CopyButton/CopyButton";
 import FadeInOnView from "@/app/component/ui/FadeInOnView";
 import React from "react";
 
