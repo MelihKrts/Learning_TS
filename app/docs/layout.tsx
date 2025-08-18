@@ -1,7 +1,8 @@
 import {getDocTree} from "@/lib/getMdxPageMeta";
-import DocsSidebar from "@/app/component/ui/DocsSidebar";
-import {PageLoadTime} from "@/app/component/ui/PageLoad";
+import DocsSidebar from "@/app/component/ui/DocsSideBar/DocsSidebar";
+import {PageLoadTime} from "@/app/component/ui/PageLoad/PageLoad";
 import React from "react";
+import TOCBtn from "@/app/component/ui/TableOfContents/TocBtn";
 
 export default function DocsLayout({children,}: { children: React.ReactNode; }) {
     const docTree = getDocTree();
@@ -13,6 +14,7 @@ export default function DocsLayout({children,}: { children: React.ReactNode; }) 
                 <div className="mx-auto p-6 ">
                     {children}
                 </div>
+                <TOCBtn/>
             </div>
             <PageLoadTime/>
         </>

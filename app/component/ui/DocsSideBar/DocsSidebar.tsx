@@ -1,11 +1,11 @@
 "use client"
 
 import { HiChevronLeft, HiChevronRight, HiOutlineMenu, HiX } from "react-icons/hi"
-import { useResponsive } from "@/hooks/use-responsive"
-import { useSidebarState } from "@/hooks/use-sidebar"
+import { useResponsive } from "@/hooks/sidebar/use-responsive"
+import { useSidebarState } from "@/hooks/sidebar/use-sidebar"
 import type { getDocTree } from "@/lib/getMdxPageMeta"
-import {CollapsedSidebarIcons} from "@/app/component/ui/CollapsedSidebarIcons";
-import {SidebarNavigation} from "@/app/component/ui/SideBarNavigation";
+import {CollapsedSidebarIcons} from "@/app/component/ui/DocsSideBar/CollapsedSidebarIcons";
+import {SidebarNavigation} from "@/app/component/ui/DocsSideBar/SideBarNavigation";
 
 interface DocsSidebarProps {
     docTree: ReturnType<typeof getDocTree>

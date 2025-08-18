@@ -8,7 +8,7 @@ import {ThemeProvider} from "@/app/component/ThemeProvider";
 import dynamic from "next/dynamic";
 import ThemeColorUpdater from "@/app/component/ThemeColorUpdater";
 
-const CheckConnectionControl = dynamic(()=> import("@/app/component/ui/CheckConnectionControl"));
+const CheckConnectionControl = dynamic(()=> import("@/app/component/ui/CheckConnectionControl/CheckConnectionControl"));
 
 const delivery = localFont({
     src: [

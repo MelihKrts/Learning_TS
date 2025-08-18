@@ -1,78 +1,85 @@
-// lib/getMdxPageMeta.ts
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
-export interface DocMeta {
-    title?: string;
-    description?: string;
-    prev?: string;
-    next?: string;
-    prevTitle?: string;
-    nextTitle?: string;
-    order?: number;
-    tags?: string[];
-    lastUpdated?: string;
+interface DocMeta {
+    title: string
+    description?: string
+    prev?: string
+    next?: string
+    prevTitle?: string
+    nextTitle?: string
+    order?: number
+    tags?: string[]
+    lastUpdated?: string
 }
 
-export interface DocWithSlug extends DocMeta {
-    slug: string;
+interface DocTreeItem {
+    slug: string
+    title: string
+    order?: number
+    children?: DocTreeItem[]
 }
 
 export function getMdxPageMeta(slug: string): DocMeta {
-    const filepath = path.join(process.cwd(), "content", `${slug}.mdx`)
+    const filePath = path.join(process.cwd(), "content", `${slug}.mdx`)
 
-    if (!fs.existsSync(filepath)) {
-        throw new Error(`MDX file not found: ${slug}.mdx`)
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`File not found: ${slug}.mdx`)
     }
 
-    const fileContent = fs.readFileSync(filepath, "utf8")
+    const fileContent = fs.readFileSync(filePath, "utf8")
     const { data } = matter(fileContent)
-    return data as DocMeta
+
+    return {
+        title: data.title || slug,
+        description: data.description,
+        prev: data.prev,
+        next: data.next,
+        prevTitle: data.prevTitle,
+        nextTitle: data.nextTitle,
+        order: data.order,
+        tags: data.tags,
+        lastUpdated: data.lastUpdated,
+    }
 }
 
-// Tüm dokümantasyon sayfalarını listele
 export function getAllDocSlugs(): string[] {
-    const docsDirectory = path.join(process.cwd(), "content")
+    const contentDir = path.join(process.cwd(), "content")
 
-    if (!fs.existsSync(docsDirectory)) {
+    if (!fs.existsSync(contentDir)) {
         return []
     }
 
-    return fs.readdirSync(docsDirectory)
-        .filter(file => file.endsWith('.mdx'))
-        .map(file => file.replace('.mdx', ''))
+    const files = fs.readdirSync(contentDir)
+    return files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(".mdx", ""))
 }
 
-// Tüm dokümantasyon meta verilerini al
-export function getAllDocsMeta(): DocWithSlug[] {
+export function getDocTree(): DocTreeItem[] {
     const slugs = getAllDocSlugs()
+    const docs: DocTreeItem[] = []
 
-    return slugs.map(slug => ({
-        slug,
-        ...getMdxPageMeta(slug)
-    })).sort((a, b) => (a.order || 999) - (b.order || 999))
-}
-
-// Sidebar için dokümantasyon ağacı oluştur
-export function getDocTree() {
-    const allDocs = getAllDocsMeta()
-
-    return allDocs.map(doc => ({
-        slug: doc.slug,
-        title: doc.title || doc.slug,
-        order: doc.order || 999,
-        description: doc.description
-    }))
-}
-
-// Önceki/sonraki sayfa bilgilerini al
-export function getNavigation(currentSlug: string) {
-    const allDocs = getAllDocsMeta()
-    const currentIndex = allDocs.findIndex(doc => doc.slug === currentSlug)
-
-    return {
-        prev: currentIndex > 0 ? allDocs[currentIndex - 1] : null,
-        next: currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
+    for (const slug of slugs) {
+        try {
+            const meta = getMdxPageMeta(slug)
+            docs.push({
+                slug,
+                title: meta.title,
+                order: meta.order,
+            })
+        } catch {
+            // Skip files that can't be parsed
+            continue
+        }
     }
+
+    // Sort by order if available, otherwise alphabetically
+    return docs.sort((a, b) => {
+        if (a.order !== undefined && b.order !== undefined) {
+            return a.order - b.order
+        }
+        if (a.order !== undefined) return -1
+        if (b.order !== undefined) return 1
+        return a.title.localeCompare(b.title)
+    })
 }

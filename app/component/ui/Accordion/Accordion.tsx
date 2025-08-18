@@ -2,7 +2,7 @@
 import {useState} from "react";
 import Image from "next/image";
 import {motion} from "framer-motion";
-import AccordionItem from "@/app/component/ui/AccordionItem";
+import AccordionItem from "@/app/component/ui/Accordion/AccordionItem";
 
 export default function Accordion() {
     const [open, setOpen] = useState<string | null>(null)
