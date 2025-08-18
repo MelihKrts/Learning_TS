@@ -1,8 +1,8 @@
 "use client"
 import {useState} from "react";
-import {FaAngleDown, FaAngleUp} from "react-icons/fa6";
 import Image from "next/image";
 import {motion} from "framer-motion";
+import AccordionItem from "@/app/component/ui/AccordionItem";
 
 export default function Accordion() {
     const [open, setOpen] = useState<string | null>(null)
@@ -57,39 +57,10 @@ export default function Accordion() {
             {/* Accordion Items */}
             <motion.div initial={{x: "-100%"}}
                         animate={{x: 0}}
-                        transition={{duration: 0.8, ease: "easeOut"}} className="w-full max-w-6xl space-y-4 px-6">
-                {accorData.map((item) => (
-                    <div key={item.id}
-                         className="group mb-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 overflow-hidden transition-all duration-300 hover:scale-[1.02]">
-
-                        <div
-                            onClick={() => toggle(item.id)}
-                            className="flex justify-between items-center p-4 cursor-pointer bg-gradient-to-r from-slate-50 to-gray-50 hover:from-blue-50 hover:to-teal-50 transition-all duration-300"
-                        >
-                            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-500 group-hover:text-blue-700">
-                                {item.title}
-                            </h2>
-                            <div
-                                className="ml-4 p-2 rounded-full bg-white shadow-sm group-hover:bg-blue-100 transition-all duration-300">
-                                {open === item.id ?
-                                    <FaAngleUp className="text-blue-600 transition-transform duration-300 rotate-0"/> :
-                                    <FaAngleDown
-                                        className="text-gray-500 group-hover:text-blue-600 transition-all duration-300"/>
-                                }
-                            </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                            open === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                        }`}>
-                            <div className="p-4 pt-0 border-t border-gray-100">
-                                <p className="text-gray-700 py-4 leading-relaxed text-sm md:text-base">
-                                    {item.content}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                        transition={{duration: 0.8, ease: "easeOut"}}
+                        className="w-full max-w-6xl space-y-4 px-6">
+                {accorData.map((item)=>(
+                    <AccordionItem key={item.id} item={item} open={open} toggle={toggle} />
                 ))}
             </motion.div>
         </div>
