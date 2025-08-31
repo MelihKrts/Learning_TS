@@ -77,6 +77,7 @@ export default function RootLayout({children,}: Readonly<{
 
         <meta name="apple-mobile-web-app-capable" content="yes"/>
 
+
         <link rel="apple-touch-startup-image" href="splash/apple-splash-2048-2732.jpg"
               media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/>
         <link rel="apple-touch-startup-image" href="splash/apple-splash-2732-2048.jpg"
@@ -153,6 +154,7 @@ export default function RootLayout({children,}: Readonly<{
               media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/>
         <link rel="apple-touch-startup-image" href="splash/apple-splash-1136-640.jpg"
               media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/>
+
 
         <meta name="theme-color" content="#F4E6D8" media="(prefers-color-scheme: light)"/>
         <meta name="theme-color" content="#5D4037" media="(prefers-color-scheme: dark)"/>
